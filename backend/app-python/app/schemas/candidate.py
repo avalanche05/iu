@@ -1,30 +1,35 @@
 from enum import Enum
 from typing import Literal
+from pydantic import HttpUrl
 
 from app.common import BaseSchema
 from app.schemas.folder import Folder
+from app.schemas.competence import Competence
+from app.schemas.interview import Interview
 
 
-class Position(str, Enum):
-    MANAGER = "manager"
-    DEVELOPER = "developer"
-
-
-class Candidate(BaseSchema):
-    id: int
-    name: str
-    phone: str
+class CandidateCreate(BaseSchema):
+    nickname: str
     email: str
-    contacts: str
-    skills: list[str]
-    experience: float
-    position: str
+    github_url: HttpUrl
     grade: Literal["junior", "middle", "senior"]
-    speciality: str
-    education: str
+    experience_years: int
     summary: str
-    is_cold: bool
-    resume_link: str
-    city: str
-    work_format: Literal["online", "hybrid", "offline"]
+    code_quality: float
+    competencies: list[Competence]
+    folders: list[str]
+
+
+class Candidate(CandidateCreate):
+    id: int
+    nickname: str
+    email: str
+    github_url: HttpUrl
+    grade: Literal["junior", "middle", "senior"]
+    experience_years: int
+    summary: str
+    code_quality: float
+    competencies: list[Competence]
     folders: list[Folder]
+    technical_interview_result: Interview | None = None
+

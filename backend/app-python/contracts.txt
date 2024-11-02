@@ -1,0 +1,132 @@
+user
+{
+    "name"
+    "username"
+}
+
+POST users/login
+POST users/register
+
+candidate
+{
+  "id": "12345",
+  "nickname": "exampleUser",
+  "github_url": "https://github.com/exampleUser",
+  "grade": "Middle",
+  "experience_years": 5,
+  "summary": "Experienced backend developer with a focus on RESTful APIs and microservices.",
+  "code_quality": 0.85,
+  "competencies": [
+    {
+      "name": "JavaScript",
+      "proficiency": 0.9,
+    },
+    {
+      "name": "Python",
+      "proficiency": 0.75,
+    }
+  ],
+  "technical_interview_result": Interview,
+   “folders”: list[folder],
+}
+
+GET /candidates
+filters: figjam
+
+
+vacancy:
+{
+  id: int,
+  title: string,
+  description: string,
+  grade: string,
+   "competencies": [
+    {
+      "name": "JavaScript",
+      "proficiency": 0.9,
+    },
+    {
+      "name": "Python",
+      "proficiency": 0.75,
+    }
+  ],
+}
+
+POST /vacancies
+body = {
+  title: string,
+  description: string,
+   grade: string,
+   "competencies": [
+    {
+      "name": "JavaScript",
+      "proficiency": 0.9,
+    },
+    {
+      "name": "Python",
+      "proficiency": 0.75,
+    }
+  ],
+}
+POST /vacancies/file
+body = {file}
+GET /vacancies
+filters: figjam
+GET /vacancies/<vacancy-id>
+candidate + percent
+
+
+GET /generate/feedback/approve/candidates/<candidate-id> ? status
+GET /generate/feedback/reject/candidates/<candidate-id> ? status
+response = {message: str}
+
+{
+    "developer": [],
+    "manager": [],
+    "recruiter": [],    
+    "hr": [],
+    "analyst": [],
+    "qa": [],
+    "designer": [],
+}
+
+folder
+{
+    "name",
+    "candidates",
+    "candidates_count"
+}
+
+POST /folders создание новой папки (ПРОЕКТ)
+{
+    "name"
+}
+
+POST /folders/<folder-id> добавление кандидата в папку
+ {
+    "candidate_id"
+ }
+
+DELETE /folders/<folder-id> удаление папки
+
+GET /folders
+
+
+interview
+{
+    id: int,
+    summary: str,
+    "competencies": [
+    {
+      "name": "JavaScript",
+      "proficiency": 0.9,
+    },
+    {
+      "name": "Python",
+      "proficiency": 0.75,
+    }
+  ],
+}
+
+POST /interview/voice/candidates/<candidate-id>
+

@@ -10,5 +10,5 @@ class Application(BaseEntity):
     candidate_id: Mapped[int] = mapped_column(ForeignKey("candidates.id"))
     status: Mapped[str] = mapped_column(nullable=False)
 
-    vacancy: Mapped["Vacancy"] = relationship(back_populates="applications")
-    candidate: Mapped["Candidate"] = relationship(back_populates="applications")
+    vacancies: Mapped["Vacancy"] = relationship("Vacancy", back_populates="applications")
+    candidates: Mapped["Candidate"] = relationship("Candidate", back_populates="applications")
