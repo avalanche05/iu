@@ -24,7 +24,7 @@ const VacancyCard = ({ vacancy }: Props) => {
                         <div className='flex flex-col md:flex-row gap-8'>
                             <div className='flex flex-col gap-4'>
                                 <div className='flex items-center'>
-                                    <BrainCircuit className='text-purple-600 mr-2' />
+                                    <BrainCircuit className='text-blue-600 mr-2' />
                                     <span>
                                         {GradeLabels[vacancy.grade as keyof typeof GradeLabels] ??
                                             vacancy.grade}
