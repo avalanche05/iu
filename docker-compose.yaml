@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: backend/app-python/
+    environment:
+      - REGION_NAME=ru-central1
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - 8181:8000
+  ml-resume:
+    build:
+      context: ml/backend/app-python/
+    environment:
+      - REGION_NAME=ru-central1
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - 5000:8000
+  frontend:
+    build:
+        context: ./frontend
+        dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
+    ports:
+        - "3000:3000"
+  postgres:
+    image: postgres:16
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    env_file:
+      - "./backend/app-python/.env"
+    ports:
+      - "9500:5432"
+
+
+volumes:
+  postgres-data:

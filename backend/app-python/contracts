@@ -1,0 +1,98 @@
+user
+{
+    "name"
+    "username"
+}
+
+POST users/login
+POST users/statistic/<user-id>
+
+candidate
+{
+    "name"
+    "phone"
+    "email"
+    "contacts"
+    "skills"
+    "experience": float
+    "position": "developer" | "manager"
+    "grade"
+    "speciality": "java", "technical"
+    "education"
+    "summary"
+
+    "isCold": bool
+    "resumeLink": str
+}
+GET /candidates
+filters: position, grade, speciality, isCold
+
+vacancy
+{
+    "position",
+    "grade",
+    "speciality",
+    "description",
+    "team",
+    "createdAt"
+}
+
+POST /vacancies
+GET /vacancies
+filters: position, grade, speciality
+GET /vacancies/<vacancy-id>/cold-candidates (кандидаты без откликов/с другими откликами)
+
+application
+{
+    "vacancy"
+    "candidate"
+    "status"
+    "createdAt"
+}
+GET /applications
+filters: position, grade, speciality, vacancyId, status
+POST /applications
+{
+    candidateId,
+    vacancyId
+}
+POST /applications/<application-id>/status/
+{
+    "status": str
+}
+
+POST /resume
+POST /resume/vacancies/<vacancy-id>
+
+GET /generate/feedback/approve/vacancies/<vacancy-id>/candidates/<candidate-id> ? status
+GET /generate/feedback/reject/vacancies/<vacancy-id>/candidates/<candidate-id> ? status
+GET /generate/feedback/invitation/vacancies/<vacancy-id>/candidates/<candidate-id> ? status
+
+{
+    "developer": [],
+    "manager": [],
+    "recruiter": [],    
+    "hr": [],
+    "analyst": [],
+    "qa": [],
+    "designer": [],
+}
+
+folder
+{
+    "name",
+    "candidates",
+    "candidates_count"
+}
+
+POST /folders создание новой папки
+{
+    "name"
+}
+
+POST /folders/<folder-id> добавление кандидата в папку
+ {
+    "candidate_id"
+ }
+
+DELETE /folders/<folder-id> удаление папки
