@@ -15,17 +15,17 @@ jobs:
         env:
           BACK_ENV: ${{ secrets.ENV }}
           FRONT_ENV: ${{ secrets.FRONT_ENV }}
-          AWS_ACCESS_KEY_ID: 123
-          AWS_SECRET_ACCESS_KEY: 123
+          COMMON_ENV: ${{ secrets.COMMON_ENV }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          envs: BACK_ENV,FRONT_ENV,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY
+          envs: BACK_ENV,FRONT_ENV,COMMON_ENV
           script: |
             cd iu
             git fetch origin
             git reset --hard origin/main
             echo "$BACK_ENV" > ./backend/app-python/.env
             echo "$FRONT_ENV" > ./frontend/.env
+            echo "$COMMON_ENV" > .env
             sudo docker compose up --build -d
