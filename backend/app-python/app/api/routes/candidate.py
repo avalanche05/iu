@@ -2,7 +2,7 @@ import os
 import requests
 from typing import List
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Body
 from starlette import status
 
 from app import models, schemas, serializers
@@ -32,3 +32,11 @@ async def get_candidates(
         folder_id=folder_id
     )
     return serializers.get_candidates(db_candidates)
+
+
+@router.post("", status_code=status.HTTP_201_CREATED, response_model=schemas.Candidate)
+async def create_candidate(session: SessionDep,
+                           candidate_instance: schemas.CandidateCreate = Body(...)):
+    db_candidate = candidate.create(session, candidate_instance)
+
+    return serializers.get_candidate(db_candidate)

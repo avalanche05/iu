@@ -41,17 +41,17 @@ def get_all(
 
 
 def create(
-    session: Session, candidate: schemas.Candidate
+    session: Session, candidate: schemas.CandidateCreate
 ) -> Candidate:
     db_candidate = Candidate(
-        name=candidate.name,
-        phone=candidate.phone,
+        nickname=candidate.nickname,
         email=candidate.email,
+        github_url=candidate.github_url,
         experience_years=candidate.experience_years,
         grade=candidate.grade,
         summary=candidate.summary,
         code_quality=candidate.code_quality,
-        competencies=json.dumps(candidate.competencies)
+        competencies=json.dumps([competence.dict() for competence in candidate.competencies])
     )
     session.add(db_candidate)
     session.commit()
