@@ -12,7 +12,7 @@ from app.crud import candidate
 router = APIRouter()
 
 
-@router.get("")
+@router.get("", status_code=status.HTTP_200_OK, response_model=list[schemas.Candidate])
 async def get_candidates(
     session: SessionDep,
     db_user: CurrentUser,
