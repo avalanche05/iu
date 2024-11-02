@@ -17,19 +17,10 @@ class CandidateCreate(BaseSchema):
     summary: str
     code_quality: float
     competencies: list[Competence]
-    folders: list[str]
 
 
 class Candidate(CandidateCreate):
     id: int
-    nickname: str
-    email: str
-    github_url: HttpUrl
-    grade: Literal["junior", "middle", "senior"]
-    experience_years: int
-    summary: str
-    code_quality: float
-    competencies: list[Competence]
-    folders: list[Folder]
     technical_interview_result: Interview | None = None
+    folders: list[str]
 

@@ -103,7 +103,7 @@ async def upload_resume(
         files: list[UploadFile] = File(...),
         vacancy_id: int | None = None,
 ) -> ResumeProcessSession:
-    succes_files = []
+    success_files = []
     error_files = []
     for file in files:
         try:
@@ -116,14 +116,14 @@ async def upload_resume(
                 file_content=file_content,
                 file_type=file.content_type,
             )
-            succes_files.append(file_key)
+            success_files.append(file_key)
         except Exception as e:
             error_files.append({"file_name": file.filename, "reason": str(e)})
 
     session_id = str(uuid4())
     resume_processor = ResumeProcessorThread(
         session_id=session_id,
-        files=succes_files,
+        files=success_files,
         db_session=db_session,
         s3_client=s3_client,
         vacancy_id=vacancy_id,
@@ -136,7 +136,7 @@ async def upload_resume(
         session_id=session_id,
         is_finished=False,
         processing=[
-            FileResult(file_name=file_key.split("~!~")[-1]) for file_key in succes_files
+            FileResult(file_name=file_key.split("~!~")[-1]) for file_key in success_files
         ],
         success=[],
         error=[
