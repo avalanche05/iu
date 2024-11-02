@@ -21,13 +21,10 @@ def create(session: Session, user: schemas.User) -> User:
 
     return db_user
 
+
 def read_user_by_token(session: Session, token: str) -> User:
     db_token = session.query(Token).filter(Token.access_token == token).first()
     if db_token is None:
         return None
     else:
         return db_token.user
-
-
-
-

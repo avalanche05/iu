@@ -22,12 +22,12 @@ router = APIRouter()
 
 class ResumeProcessorThread(threading.Thread):
     def __init__(
-        self,
-        session_id: str,
-        files: list[str],
-        db_session,
-        s3_client,
-        vacancy_id: int | None = None,
+            self,
+            session_id: str,
+            files: list[str],
+            db_session,
+            s3_client,
+            vacancy_id: int | None = None,
     ):
         threading.Thread.__init__(self)
         self.session_id = session_id
@@ -96,12 +96,12 @@ class ResumeProcessorThread(threading.Thread):
 
 @router.post("")
 async def upload_resume(
-    db_session: SessionDep,
-    s3_client: S3ClientDep,
-    storage: StorageDep,
-    db_user: CurrentUser,
-    files: list[UploadFile] = File(...),
-    vacancy_id: int | None = None,
+        db_session: SessionDep,
+        s3_client: S3ClientDep,
+        storage: StorageDep,
+        db_user: CurrentUser,
+        files: list[UploadFile] = File(...),
+        vacancy_id: int | None = None,
 ) -> ResumeProcessSession:
     succes_files = []
     error_files = []
@@ -193,13 +193,11 @@ async def get_resume_process_session(storage: StorageDep, db_user: CurrentUser, 
     )
 
 
-
-
 @router.post("/voice")
 async def upload_resume_voice(
-    s3_client: S3ClientDep,
-    db_user: CurrentUser,
-    file: UploadFile = File(...),
+        s3_client: S3ClientDep,
+        db_user: CurrentUser,
+        file: UploadFile = File(...),
 ) -> VoiceProcessSession:
     assert str(file.filename).endswith(".mp3")
     file_key = str(uuid4()) + "~!~" + file.filename
@@ -214,11 +212,11 @@ async def upload_resume_voice(
     session_id = str(uuid4())
 
     response = requests.post("http://51.250.25.30:5001/interview/analyze/" + session_id,
-                  json={
-                      "file_key": file_key,
-                      "position": "сотрудник",
-                  })
-    
+                             json={
+                                 "file_key": file_key,
+                                 "position": "сотрудник",
+                             })
+
     response.raise_for_status()
     data = response.json()
     return VoiceProcessSession(
@@ -230,11 +228,11 @@ async def upload_resume_voice(
 
 @router.get("/voice/{session_id}")
 async def voice_session(
-    session_id: str,
-    db_user: CurrentUser,
+        session_id: str,
+        db_user: CurrentUser,
 ) -> VoiceProcessSession:
     response = requests.get("http://51.250.25.30:5001/interview/analyze/" + session_id)
-    
+
     response.raise_for_status()
     data = response.json()
     return VoiceProcessSession(

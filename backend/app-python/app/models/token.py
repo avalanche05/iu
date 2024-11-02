@@ -11,4 +11,7 @@ class Token(BaseEntity):
     access_token: Mapped[str] = mapped_column(default=lambda: secrets.token_urlsafe(32))
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
-    user: Mapped["User"] = relationship(back_populates="tokens")
+    user: Mapped["User"] = relationship(
+        "User",
+        back_populates="tokens"
+    )

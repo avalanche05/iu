@@ -16,23 +16,19 @@ router = APIRouter()
 async def get_candidates(
     session: SessionDep,
     db_user: CurrentUser,
-    position: str | None = None,
     grade: str | None = None,
-    speciality: str | None = None,
-    isCold: bool | None = None,
-    city: str | None = None,
-    work_format: str | None = None,
-    skills: str | None = None,
+    nickname: str | None = None,
+    competencies: str | None = None,
+    experience: int | None = None,
+    folder_id: int | None = None
 ) -> List[schemas.Candidate]:
 
     db_candidates = candidate.get_all(
         session=session,
-        position=position,
         grade=grade,
-        speciality=speciality,
-        isCold=isCold,
-        city=city,
-        work_format=work_format,
-        skills=skills
+        nickname=nickname,
+        competencies=competencies,
+        experience=experience,
+        folder_id=folder_id
     )
     return serializers.get_candidates(db_candidates)

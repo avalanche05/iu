@@ -6,3 +6,5 @@ from .resume import *
 from .token import *
 from .user import *
 from .vacancy import *
+from .competence import *
+from .interview import *

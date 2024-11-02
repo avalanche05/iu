@@ -1,66 +1,57 @@
-from sqlalchemy import func, or_
+import json
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
-from app.models import Candidate
+from app import schemas
+from app.models import Candidate, Vacancy, FolderCandidate
 
 
 def get_all(
     session: Session,
-    position: str | None = None,
     grade: str | None = None,
-    speciality: str | None = None,
-    isCold: bool | None = None,
-    city: str | None = None,
-    work_format: str | None = None,
-    skills: str | None = None
+    nickname: str | None = None,
+    competencies: str | None = None,
+    experience: int | None = None,
+    folder_id: int | None = None,
 ) -> list[Candidate]:
     query = session.query(Candidate)
 
-    if position is not None:
-        query = query.filter(Candidate.position.ilike(f"%{position}%"))
+    if nickname is not None:
+        query = query.filter(Candidate.nickname.ilike(f"%{nickname}%"))
     if grade is not None:
         query = query.filter(Candidate.grade == grade)
-    if speciality is not None:
-        query = query.filter(Candidate.position.ilike(f"%{speciality}%"))
-    if isCold is not None:
-        query = query.filter(Candidate.is_cold == isCold)
-    if city is not None:
-        query = query.filter(Candidate.position.ilike(f"%{city}%"))
-    if work_format is not None:
-        query = query.filter(Candidate.work_format == work_format)
-    if skills is not None:
-        skills_list = skills.split()
-        query = query.filter(
-            or_(
-                *[
-                    func.array_position(Candidate.skills, term).isnot(None)
-                    for term in skills_list
-                ]
-            )
-        )
+    if experience is not None:
+        query = query.filter(Candidate.experience_years >= experience)
+    if folder_id is not None:
+        query = query.join(FolderCandidate, Candidate.id == FolderCandidate.c.candidate_id)\
+            .filter(FolderCandidate.c.folder_id == folder_id)
+
+    if competencies is not None:
+        competencies_list = [competence.strip() for competence in competencies.split()]
+        # query = query.filter(
+        #     or_(
+        #         *[
+        #             func.array_position(Vacancy.skills, term).isnot(None)
+        #             for term in competencies_list
+        #         ]
+        #     )
+        # )
 
     return query.all()
 
 
 def create(
-    session: Session, candidate: dict, resume_link: str, is_cold: bool = True
+    session: Session, candidate: schemas.Candidate
 ) -> Candidate:
     db_candidate = Candidate(
-        name=candidate["name"],
-        phone=candidate["phone"],
-        email=candidate["email"],
-        contacts=candidate["contacts"],
-        skills=[skill.lower().strip() for skill in candidate["skills"]],
-        experience=candidate["experience"],
-        position=candidate["position"],
-        grade=candidate["grade"],
-        speciality=candidate["speciality"],
-        education=candidate["education"],
-        summary=candidate["summary"],
-        is_cold=is_cold,
-        resume_link=resume_link,
-        city=candidate["city"],
-        work_format=candidate["work_format"],
+        name=candidate.name,
+        phone=candidate.phone,
+        email=candidate.email,
+        experience_years=candidate.experience_years,
+        grade=candidate.grade,
+        summary=candidate.summary,
+        code_quality=candidate.code_quality,
+        competencies=json.dumps(candidate.competencies)
     )
     session.add(db_candidate)
     session.commit()
@@ -70,3 +61,9 @@ def create(
 
 def get_candidate(session: Session, candidate_id: int) -> Candidate:
     return session.query(Candidate).filter(Candidate.id == candidate_id).first()
+
+
+def get_candidates_by_vacancy(session: Session, vacancy: Vacancy) -> list[Candidate]:
+    query = session.query(Candidate).order_by(Candidate.experience_years)
+
+    return query.all()

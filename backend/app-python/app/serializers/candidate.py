@@ -1,26 +1,20 @@
 from app import models, schemas
-from app.serializers import folder
+from app.serializers import competence, folder, interview
 
 
 def get_candidate(db_candidate: models.Candidate) -> schemas.Candidate:
     return schemas.Candidate(
         id=db_candidate.id,
-        name=db_candidate.name,
-        phone=db_candidate.phone,
+        nickname=db_candidate.nickname,
         email=db_candidate.email,
-        contacts=db_candidate.contacts,
-        skills=db_candidate.skills,
-        experience=db_candidate.experience,
-        position=db_candidate.position,
+        github_url=db_candidate.github_url,
         grade=db_candidate.grade.lower(),
-        speciality=db_candidate.speciality,
-        education=db_candidate.education,
+        experience_years=db_candidate.experience_years,
         summary=db_candidate.summary,
-        is_cold=db_candidate.is_cold,
-        resume_link=db_candidate.resume_link,
-        city=db_candidate.city,
-        work_format=db_candidate.work_format,
+        code_quality=db_candidate.code_quality,
+        competencies=competence.get_competencies(db_candidate.competencies),
         folders=folder.get_folders(db_candidate.folders),
+        technical_interview_result=None if db_candidate.interview is None else interview.get_interview(db_candidate.interview)
     )
 
 
