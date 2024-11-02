@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useStores } from '@/hooks/useStores';
 import { toast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
-import ApplicationsFilter from '@/components/CandidatesFilter';
+import CandidatesFilter from '@/components/CandidatesFilter';
 
 const Candidates = observer(() => {
     const { rootStore } = useStores();
@@ -29,7 +29,7 @@ const Candidates = observer(() => {
 
     return (
         <div className='container mx-auto p-4'>
-            <ApplicationsFilter />
+            <CandidatesFilter />
 
             {rootStore.isCandidatesLoading ? (
                 <>

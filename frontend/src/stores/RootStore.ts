@@ -28,6 +28,8 @@ export class RootStore {
 
     setCandidatesFilter(filter: ICandidatesFilter) {
         this.candidatesFilter = filter;
+
+        this.fetchCandidates();
     }
 
     setVacanciesFilter(filter: IVacanciesFilter) {
@@ -59,7 +61,13 @@ export class RootStore {
     async fetchCandidates() {
         this.isCandidatesLoading = true;
 
-        return CandidatesApiService.fetchCandidate({})
+        return CandidatesApiService.fetchCandidate({
+            competencies: this.candidatesFilter.competencies?.join(','),
+            folder_id: this.activeFolderId ?? undefined,
+            grade: this.candidatesFilter.grade ?? undefined,
+            nickname: this.candidatesFilter.nickname ?? undefined,
+            experience: this.candidatesFilter.experience ?? undefined,
+        })
             .then((candidates) => {
                 this.candidates = candidates;
 
@@ -122,14 +130,5 @@ export class RootStore {
             .finally(() => {
                 this.isVacanciesLoading = false;
             });
-    }
-
-    async createApplication(candidateId: number, vacancyId: number) {
-        return CandidatesApiService.createApplicatioin({
-            candidate_id: candidateId,
-            vacancy_id: vacancyId,
-        }).then(() => {
-            this.fetchCandidates();
-        });
     }
 }

@@ -16,3 +16,33 @@ export interface Candidate {
     technical_interview_result: Interview;
     folders: Folder[];
 }
+
+export interface FetchCandidatesParams {
+    nickname?: string | null;
+    grade?: Grade | null;
+    experience?: number | null;
+    competencies?: string | null;
+    folder_id?: number | null;
+}
+
+export enum ApplicationStatus {
+    Pending = 'pending',
+    HrAccepted = 'hrAccepted',
+    HrDeclined = 'hrDeclined',
+    InterviewerAccepted = 'interviewerAccepted',
+    InterviewerDeclined = 'interviewerDeclined',
+    Offer = 'offer',
+    CandidateAccepted = 'candidateAccepted',
+    CandidateDeclined = 'candidateDeclined',
+}
+
+export const ApplicationStatusLabels: Record<ApplicationStatus, string> = {
+    [ApplicationStatus.Pending]: 'Ожидает обработки',
+    [ApplicationStatus.HrAccepted]: 'Принята рекрутером',
+    [ApplicationStatus.HrDeclined]: 'Отклонена рекрутером',
+    [ApplicationStatus.InterviewerAccepted]: 'Интервью пройдено успешно',
+    [ApplicationStatus.InterviewerDeclined]: 'Интервью не пройдено',
+    [ApplicationStatus.Offer]: 'Отправлен оффер',
+    [ApplicationStatus.CandidateAccepted]: 'Принято кандидатом',
+    [ApplicationStatus.CandidateDeclined]: 'Отклонено кандидатом',
+};

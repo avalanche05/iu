@@ -1,14 +1,9 @@
 import { API_URL } from '@/config';
-import {
-    Candidate,
-    ChangeApplicationStatusParams,
-    CreateApplicationParams,
-    FetchApplicationsParams,
-} from './models';
-import { get, post } from './http';
+import { Candidate, FetchCandidatesParams } from './models';
+import { get } from './http';
 
 class CandidatesApiService {
-    public async fetchCandidate(params: FetchApplicationsParams) {
+    public async fetchCandidate(params: FetchCandidatesParams) {
         return [
             {
                 id: 1,
@@ -54,19 +49,6 @@ class CandidatesApiService {
         const response = await get<Candidate[]>(`${API_URL}/api/v1/candidates`, {
             params,
         });
-
-        return response;
-    }
-
-    public async changeApplicationStatus({
-        applicationId,
-        ...params
-    }: ChangeApplicationStatusParams) {
-        await post(`${API_URL}/api/v1/applications/applications/${applicationId}/status`, params);
-    }
-
-    public async createApplicatioin(params: CreateApplicationParams) {
-        const response = await post(`${API_URL}/api/v1/applications`, params);
 
         return response;
     }

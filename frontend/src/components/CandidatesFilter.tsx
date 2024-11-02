@@ -10,25 +10,22 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { ApplicationStatus, ApplicationStatusLabels } from '@/api/models';
-import { Grade, GradeLabels, WorkSchedule, WorkScheduleLabels } from '@/models/ICandidatesFilter';
+import { Grade, GradeLabels } from '@/models/ICandidatesFilter';
 import { useStores } from '@/hooks/useStores';
 import Folders from './Folders';
 import { observer } from 'mobx-react-lite';
+import { Tag, TagInput } from 'emblor';
+import { Label } from './ui/label';
 
-const ApplicationsFilter = observer(() => {
+const CandidatesFilter = observer(() => {
     const { rootStore } = useStores();
+    const [tags, setTags] = useState<Tag[]>([]);
+    const [activeTagIndex, setActiveTagIndex] = useState<number | null>(null);
 
     const [formData, setFormData] = useState({
-        name: '',
-        city: '',
-        position: '',
-        speciality: '',
+        nickname: '',
         grade: '',
         experience: '',
-        workSchedule: '',
-        applicationStatus: '',
-        vacancyId: '',
     });
 
     // Обработчик выбора для select полей
@@ -41,15 +38,10 @@ const ApplicationsFilter = observer(() => {
         e.preventDefault();
 
         rootStore.setCandidatesFilter({
-            name: formData.name || null,
-            city: formData.city || null,
-            position: formData.position || null,
-            speciality: formData.speciality || null,
+            nickname: formData.nickname || null,
             grade: (formData.grade as Grade) || null,
-            experience: formData.experience || null,
-            workSchedule: (formData.workSchedule as WorkSchedule) || null,
-            applicationStatus: (formData.applicationStatus as ApplicationStatus) || null,
-            vacancyId: formData.vacancyId ? +formData.vacancyId : null,
+            experience: +formData.experience || null,
+            competencies: tags.map((tag) => tag.text),
         });
     };
 
@@ -60,48 +52,12 @@ const ApplicationsFilter = observer(() => {
             <div className='flex flex-col space-y-4 mb-4'>
                 <form onSubmit={(e) => handleSubmit(e)} className='flex flex-col space-y-4 mb-4'>
                     <div className='flex space-x-2'>
-                        <Select
-                            value={formData.vacancyId}
-                            onValueChange={handleSelectChange('vacancyId')}
-                        >
-                            <SelectTrigger className='flex-1'>
-                                <SelectValue placeholder='Выберите вакансию' />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {rootStore.vacancies.map((vacancy) => (
-                                    <SelectItem key={vacancy.id} value={vacancy.id.toString()}>
-                                        {vacancy.position}: {vacancy.speciality}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-
                         <Input
-                            placeholder='Имя'
+                            placeholder='Ник на GitHub'
                             className='flex-1'
-                            name='name'
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        />
-
-                        <Input
-                            placeholder='Позиция'
-                            className='flex-1'
-                            name='position'
-                            value={formData.position}
-                            onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                        />
-                    </div>
-
-                    <div className='flex space-x-2'>
-                        <Input
-                            placeholder='Специальность'
-                            className='flex-1'
-                            name='speciality'
-                            value={formData.speciality}
-                            onChange={(e) =>
-                                setFormData({ ...formData, speciality: e.target.value })
-                            }
+                            name='nickname'
+                            value={formData.nickname}
+                            onChange={(e) => setFormData({ ...formData, nickname: e.target.value })}
                         />
 
                         <Select value={formData.grade} onValueChange={handleSelectChange('grade')}>
@@ -129,49 +85,23 @@ const ApplicationsFilter = observer(() => {
                     </div>
 
                     <div className='flex space-x-2'>
-                        <Select
-                            value={formData.workSchedule}
-                            onValueChange={handleSelectChange('workSchedule')}
-                        >
-                            <SelectTrigger className='flex-1'>
-                                <SelectValue placeholder='График работы' />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {Object.keys(WorkScheduleLabels).map((key) => (
-                                    <SelectItem key={key} value={key}>
-                                        {WorkScheduleLabels[key as keyof typeof WorkScheduleLabels]}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <div className='w-full'>
+                            <Label htmlFor='team' className='text-right'>
+                                Требуемые навыки
+                            </Label>
 
-                        <Select
-                            value={formData.applicationStatus}
-                            onValueChange={handleSelectChange('applicationStatus')}
-                        >
-                            <SelectTrigger className='flex-1'>
-                                <SelectValue placeholder='Статус отклика' />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {Object.keys(ApplicationStatusLabels).map((key) => (
-                                    <SelectItem key={key} value={key}>
-                                        {
-                                            ApplicationStatusLabels[
-                                                key as keyof typeof ApplicationStatusLabels
-                                            ]
-                                        }
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-
-                        <Input
-                            placeholder='Город'
-                            className='flex-1'
-                            name='city'
-                            value={formData.city}
-                            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                        />
+                            <div className='tag-input'>
+                                <TagInput
+                                    placeholder='Введите навыки'
+                                    tags={tags}
+                                    setTags={(newTags) => {
+                                        setTags(newTags);
+                                    }}
+                                    activeTagIndex={activeTagIndex}
+                                    setActiveTagIndex={setActiveTagIndex}
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     <div className='flex space-x-2'>
@@ -179,19 +109,15 @@ const ApplicationsFilter = observer(() => {
                             className='w-1/3'
                             type='button'
                             variant={'outline'}
-                            onClick={() =>
+                            onClick={() => {
                                 setFormData({
-                                    name: '',
-                                    city: '',
-                                    position: '',
-                                    speciality: '',
+                                    nickname: '',
                                     grade: '',
                                     experience: '',
-                                    workSchedule: '',
-                                    applicationStatus: '',
-                                    vacancyId: '',
-                                })
-                            }
+                                });
+
+                                setTags([]);
+                            }}
                         >
                             Очистить
                         </Button>
@@ -206,4 +132,4 @@ const ApplicationsFilter = observer(() => {
     );
 });
 
-export default ApplicationsFilter;
+export default CandidatesFilter;
