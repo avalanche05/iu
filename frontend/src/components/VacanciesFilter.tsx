@@ -1,29 +1,22 @@
-'use client';
-
 import { FormEvent, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { Grade, GradeLabels, WorkSchedule, WorkScheduleLabels } from '@/models/ICandidatesFilter';
+import { Grade, GradeLabels } from '@/models/ICandidatesFilter';
 import { useStores } from '@/hooks/useStores';
 import { observer } from 'mobx-react-lite';
+import { Tag, TagInput } from 'emblor';
+import { Label } from './ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 const VacanciesFilter = observer(() => {
     const { rootStore } = useStores();
 
+    const [tags, setTags] = useState<Tag[]>([]);
+    const [activeTagIndex, setActiveTagIndex] = useState<number | null>(null);
+
     const [formData, setFormData] = useState({
-        position: '',
+        title: '',
         grade: '',
-        speciality: '',
-        city: '',
-        work_format: '',
-        skills: '',
     });
 
     // Обработчик выбора для select полей
@@ -36,12 +29,9 @@ const VacanciesFilter = observer(() => {
         e.preventDefault();
 
         rootStore.setVacanciesFilter({
-            position: formData.position || null,
+            title: formData.title || null,
+            competencies: tags.map((tag) => tag.text).join(','),
             grade: (formData.grade as Grade) || null,
-            speciality: formData.speciality || null,
-            city: formData.city || null,
-            work_format: (formData.work_format as WorkSchedule) || null,
-            skills: formData.skills || null,
         });
     };
 
@@ -51,39 +41,11 @@ const VacanciesFilter = observer(() => {
                 <form onSubmit={(e) => handleSubmit(e)} className='flex flex-col space-y-4 mb-4'>
                     <div className='flex space-x-2'>
                         <Input
-                            placeholder='Позиция'
+                            placeholder='Название'
                             className='flex-1'
-                            name='position'
-                            value={formData.position}
-                            onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                        />
-
-                        <Input
-                            placeholder='Специальность'
-                            className='flex-1'
-                            name='speciality'
-                            value={formData.speciality}
-                            onChange={(e) =>
-                                setFormData({ ...formData, speciality: e.target.value })
-                            }
-                        />
-
-                        <Input
-                            placeholder='Город'
-                            className='flex-1'
-                            name='city'
-                            value={formData.city}
-                            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                        />
-                    </div>
-
-                    <div className='flex space-x-2'>
-                        <Input
-                            placeholder='Навыки'
-                            className='flex-1'
-                            name='city'
-                            value={formData.skills}
-                            onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
+                            name='title'
+                            value={formData.title}
+                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                         />
 
                         <Select value={formData.grade} onValueChange={handleSelectChange('grade')}>
@@ -98,22 +60,26 @@ const VacanciesFilter = observer(() => {
                                 ))}
                             </SelectContent>
                         </Select>
+                    </div>
 
-                        <Select
-                            value={formData.work_format}
-                            onValueChange={handleSelectChange('work_format')}
-                        >
-                            <SelectTrigger className='flex-1'>
-                                <SelectValue placeholder='График работы' />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {Object.keys(WorkScheduleLabels).map((key) => (
-                                    <SelectItem key={key} value={key}>
-                                        {WorkScheduleLabels[key as keyof typeof WorkScheduleLabels]}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                    <div className='flex space-x-2'>
+                        <div className='w-full'>
+                            <Label htmlFor='team' className='text-right'>
+                                Требуемые навыки
+                            </Label>
+
+                            <div className='tag-input'>
+                                <TagInput
+                                    placeholder='Введите навыки'
+                                    tags={tags}
+                                    setTags={(newTags) => {
+                                        setTags(newTags);
+                                    }}
+                                    activeTagIndex={activeTagIndex}
+                                    setActiveTagIndex={setActiveTagIndex}
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     <div className='flex space-x-2'>
@@ -121,16 +87,14 @@ const VacanciesFilter = observer(() => {
                             className='w-1/3'
                             type='button'
                             variant={'outline'}
-                            onClick={() =>
+                            onClick={() => {
                                 setFormData({
-                                    city: '',
                                     grade: '',
-                                    position: '',
-                                    speciality: '',
-                                    work_format: '',
-                                    skills: '',
-                                })
-                            }
+                                    title: '',
+                                });
+
+                                setTags([]);
+                            }}
                         >
                             Очистить
                         </Button>
