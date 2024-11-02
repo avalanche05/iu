@@ -105,7 +105,9 @@ def get_candidates_by_vacancy(session: Session, vacancy: Vacancy) -> list[schema
 
     db_candidates = query.all()
 
-    return [serializers.get_candidate_for_vacancy(db_candidate,
-                                                  calculate_compliance_metric_percents(db_candidate.competencies,
-                                                                                       vacancy.competencies))
-            for db_candidate in db_candidates]
+    candidates = sorted([serializers.get_candidate_for_vacancy(db_candidate,
+                                                               calculate_compliance_metric_percents(
+                                                                   db_candidate.competencies,
+                                                                   vacancy.competencies))
+                         for db_candidate in db_candidates], key=lambda x: x.compliance_percent, reverse=True)
+    return candidates
