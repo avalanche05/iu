@@ -5,7 +5,10 @@ from app.common import BaseSchema
 from app.schemas.competence import Competence
 
 
-class Interview(BaseSchema):
-    id: int
+class InterviewCreate(BaseSchema):
     summary: str
     competencies: list[Competence]
+
+
+class Interview(InterviewCreate):
+    id: int

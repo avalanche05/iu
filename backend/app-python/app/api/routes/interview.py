@@ -4,9 +4,10 @@ from uuid import uuid4
 import requests
 from fastapi import APIRouter, Path, UploadFile, File
 
-from app import serializers, crud
+from app import serializers, schemas
 from app.api.deps import SessionDep, CurrentUser
 from app.common import BaseSchema
+from app.crud import interview
 
 import requests
 
@@ -21,3 +22,14 @@ async def create_interview_file(
         candidate_id: int = Path(...)
 ):
     pass
+
+
+@router.post("", response_model=schemas.Interview)
+async def create_interview(
+        db_session: SessionDep,
+        db_user: CurrentUser,
+        interview_instance: schemas.InterviewCreate
+):
+    db_interview = interview.create(session=db_session, intervie=interview_instance, user=db_user)
+
+    return serializers.get_interview(db_interview)

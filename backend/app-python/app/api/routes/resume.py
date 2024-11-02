@@ -193,6 +193,7 @@ async def get_resume_process_session(storage: StorageDep, db_user: CurrentUser, 
     )
 
 
+# TODO: add candidate_id, attach to candidate_id
 @router.post("/voice")
 async def upload_resume_voice(
         s3_client: S3ClientDep,
