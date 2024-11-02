@@ -12,6 +12,7 @@ import Comparision from './pages/Comparision';
 import Uploader from './pages/Uploader';
 import Statistics from './pages/Statistics';
 import InterviewFeedback from './pages/InterviewFeedback';
+import VacancyDetails from './pages/VacancyDetails';
 
 function App() {
     return (
@@ -44,6 +45,16 @@ function App() {
                             <RequireAuth>
                                 <Dashboard>
                                     <Vacancies />
+                                </Dashboard>
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path={`/${Pages.VacancyDetails}`}
+                        element={
+                            <RequireAuth>
+                                <Dashboard>
+                                    <VacancyDetails />
                                 </Dashboard>
                             </RequireAuth>
                         }

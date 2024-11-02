@@ -1,5 +1,6 @@
 import { Grade } from '@/models/ICandidatesFilter';
 import { Competency } from './competency';
+import { Candidate } from './candidates';
 
 export interface Vacancy {
     id: number;
@@ -20,4 +21,12 @@ export interface FetchVacancyParams {
     title?: string | null;
     grade?: Grade | null;
     competencies?: string | null;
+}
+
+export interface FetchVacancyDetailsParams {
+    vacancyId: number;
+}
+
+export interface IVacancyDetails extends Vacancy {
+    candidates: Candidate[];
 }

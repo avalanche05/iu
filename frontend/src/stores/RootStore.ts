@@ -1,6 +1,13 @@
 import CandidatesApiService from '@/api/CandidatesApiService';
 import FoldersApiService from '@/api/FoldersApiService';
-import { Candidate, CreateVacancyParams, FetchVacancyParams, Folder, Vacancy } from '@/api/models';
+import {
+    Candidate,
+    CreateVacancyParams,
+    FetchVacancyDetailsParams,
+    FetchVacancyParams,
+    Folder,
+    Vacancy,
+} from '@/api/models';
 import VacanciesApiService from '@/api/VacanciesApiService';
 import { CandidateToCompare } from '@/models/CandidateToCompare';
 import { defaultCandidatesFilter, ICandidatesFilter } from '@/models/ICandidatesFilter';
@@ -130,5 +137,9 @@ export class RootStore {
             .finally(() => {
                 this.isVacanciesLoading = false;
             });
+    }
+
+    async fetchVacancyDetails({ vacancyId }: FetchVacancyDetailsParams) {
+        return VacanciesApiService.fetchVacancyDetails({ vacancyId });
     }
 }
