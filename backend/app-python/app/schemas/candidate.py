@@ -16,11 +16,15 @@ class CandidateCreate(BaseSchema):
     experience_years: int
     summary: str
     code_quality: float
-    competencies: list[Competence]
+    competencies: list[Competence] | None = None
 
 
 class Candidate(CandidateCreate):
     id: int
     technical_interview_result: Interview | None = None
     folders: list[str]
+
+
+class CandidateForVacancy(Candidate):
+    compliance_percent: float
 

@@ -2,8 +2,8 @@ from datetime import datetime
 from typing import Literal
 
 from app.common import BaseSchema
-from app.schemas.user import User
 from app.schemas.competence import Competence
+from app.schemas.candidate import CandidateForVacancy
 
 
 class VacancyCreate(BaseSchema):
@@ -15,3 +15,7 @@ class VacancyCreate(BaseSchema):
 
 class Vacancy(VacancyCreate):
     id: int
+
+
+class VacancyCandidateList(Vacancy):
+    candidates: list[CandidateForVacancy]
