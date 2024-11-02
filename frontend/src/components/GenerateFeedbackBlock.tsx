@@ -15,10 +15,7 @@ const GenerateFeedbackBlock = ({ candidateId }: Props) => {
 
     return (
         <>
-            <p className='text-sm'>
-                Составить текст сообщения кандидату на основе его профиля и вакансии, на которую он
-                подался.
-            </p>
+            <p className='text-sm'>Составить текст сообщения кандидату на основе его профиля.</p>
 
             <div className='space-y-2'>
                 <Button

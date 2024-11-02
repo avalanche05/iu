@@ -14,16 +14,6 @@ type Props = {
     candidate: Candidate;
 };
 
-// const labels = ['Communication', 'Technical Skills', 'Teamwork', 'Problem Solving', 'Creativity'];
-// const datasets = [
-//     {
-//         label: 'Candidate A',
-//         data: [0.8, 0.9, 0.85, 0.75, 0.6],
-//         backgroundColor: 'rgba(255, 99, 132, 0.2)',
-//         borderColor: 'rgba(255, 99, 132, 1)',
-//     },
-// ];
-
 const CandidateCard = ({ candidate }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -37,8 +27,6 @@ const CandidateCard = ({ candidate }: Props) => {
             borderColor: candidateABorderColor,
         },
     ];
-
-    console.log(candidate.competencies);
 
     return (
         <Card className='w-full mt-6'>

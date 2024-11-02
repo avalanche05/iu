@@ -13,7 +13,7 @@ const Candidates = observer(() => {
         rootStore.fetchCandidates().catch(() => {
             toast({
                 title: 'Ошибка',
-                description: 'Не удалось загрузить отклики',
+                description: 'Не удалось загрузить профили',
                 variant: 'destructive',
             });
         });
