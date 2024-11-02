@@ -26,15 +26,16 @@ async def get_vacancies(
     return serializers.get_vacancies(db_vacancies)
 
 
-@router.get("/{vacancy_id}")
+@router.get("/{vacancy_id}", status_code=status.HTTP_201_CREATED, response_model=schemas.VacancyCandidateList)
 async def get_ranked_candidates_by_vacancy_id(
         session: SessionDep,
         vacancy_id: int = Path(...)
 ):
-    db_vacancy = vacancy.get_vacancy(session, vacancy_id)
-    db_ranked_candidates = candidate.get_candidates_by_vacancy(session, vacancy)
+    db_vacancy, candidate_list = vacancy.get_vacancy(session, vacancy_id)
+    if not db_vacancy:
+        raise HTTPException(status_code=401, detail="Vacancy not found")
 
-    return serializers.get_candidates(db_ranked_candidates)
+    return serializers.get_vacancy_candidate_list(db_vacancy, candidate_list)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=schemas.Vacancy)
