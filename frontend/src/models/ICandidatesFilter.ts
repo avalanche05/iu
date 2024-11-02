@@ -24,7 +24,7 @@ export const WorkScheduleLabels: Record<WorkSchedule, string> = {
     [WorkSchedule.Remote]: 'Удаленка',
 };
 
-export interface IApplicationsFilter {
+export interface ICandidatesFilter {
     name: string | null;
     city: string | null;
     position: string | null;
@@ -36,7 +36,7 @@ export interface IApplicationsFilter {
     vacancyId: number | null;
 }
 
-export const defaultApplicationsFilter: IApplicationsFilter = {
+export const defaultCandidatesFilter: ICandidatesFilter = {
     name: null,
     city: null,
     position: null,

@@ -1,7 +1,7 @@
 import { BrainCircuit, Building, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Vacancy } from '@/api/models';
-import { GradeLabels, WorkScheduleLabels } from '@/models/IApplicationsFilter';
+import { GradeLabels, WorkScheduleLabels } from '@/models/ICandidatesFilter';
 import { Badge } from './ui/badge';
 
 type Props = {

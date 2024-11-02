@@ -4,3 +4,5 @@ export * from './applications';
 export * from './vacancies';
 export * from './folders';
 export * from './resumeUpload';
+export * from './competency';
+export * from './interview';

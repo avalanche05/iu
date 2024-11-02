@@ -22,7 +22,7 @@ import { toast } from '@/components/ui/use-toast';
 import VacanciesFilter from '@/components/VacanciesFilter';
 import VacancyCard from '@/components/VacancyCard';
 import { useStores } from '@/hooks/useStores';
-import { Grade, GradeLabels, WorkSchedule, WorkScheduleLabels } from '@/models/IApplicationsFilter';
+import { Grade, GradeLabels, WorkSchedule, WorkScheduleLabels } from '@/models/ICandidatesFilter';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
 import { Tag, TagInput } from 'emblor';

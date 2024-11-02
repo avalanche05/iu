@@ -1,4 +1,4 @@
-import { Grade, WorkSchedule } from './IApplicationsFilter';
+import { Grade, WorkSchedule } from './ICandidatesFilter';
 
 export interface IVacanciesFilter {
     position?: string | null;

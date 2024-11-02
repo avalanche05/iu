@@ -5,11 +5,10 @@ import GenerateFeedbackApiServie from '@/api/GenerateFeedbackApiServie';
 import { Loader2 } from 'lucide-react';
 
 type Props = {
-    vacancyId: number;
     candidateId: number;
 };
 
-const GenerateFeedbackBlock = ({ vacancyId, candidateId }: Props) => {
+const GenerateFeedbackBlock = ({ candidateId }: Props) => {
     const [generatedText, setGeneratedText] = useState('');
     const [isApproveLoading, setIsApproveLoading] = useState(false);
     const [isRejectLoading, setIsRejectLoading] = useState(false);
@@ -29,7 +28,6 @@ const GenerateFeedbackBlock = ({ vacancyId, candidateId }: Props) => {
 
                         GenerateFeedbackApiServie.fetchApproveFeedback({
                             candidateId,
-                            vacancyId,
                         })
                             .then(({ message }) => {
                                 setGeneratedText(message);
@@ -53,7 +51,6 @@ const GenerateFeedbackBlock = ({ vacancyId, candidateId }: Props) => {
 
                         GenerateFeedbackApiServie.fetchRejectFeedback({
                             candidateId,
-                            vacancyId,
                         })
                             .then(({ message }) => {
                                 setGeneratedText(message);

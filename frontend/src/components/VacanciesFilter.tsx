@@ -10,7 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Grade, GradeLabels, WorkSchedule, WorkScheduleLabels } from '@/models/IApplicationsFilter';
+import { Grade, GradeLabels, WorkSchedule, WorkScheduleLabels } from '@/models/ICandidatesFilter';
 import { useStores } from '@/hooks/useStores';
 import { observer } from 'mobx-react-lite';
 

@@ -6,7 +6,7 @@ import { RequireUnauth } from './auth/RequireUnauth';
 import { Dashboard } from './components/Dashboard';
 import { Toaster } from './components/ui/toaster';
 import { Pages } from './router/constants';
-import Applications from './pages/Applications';
+import Candidates from './pages/Candidates';
 import Vacancies from './pages/Vacancies';
 import Comparision from './pages/Comparision';
 import Uploader from './pages/Uploader';
@@ -33,7 +33,7 @@ function App() {
                         element={
                             <RequireAuth>
                                 <Dashboard>
-                                    <Applications />
+                                    <Candidates />
                                 </Dashboard>
                             </RequireAuth>
                         }
@@ -93,7 +93,7 @@ function App() {
                         element={
                             <RequireAuth>
                                 <Dashboard>
-                                    <Applications />
+                                    <Candidates />
                                 </Dashboard>
                             </RequireAuth>
                         }

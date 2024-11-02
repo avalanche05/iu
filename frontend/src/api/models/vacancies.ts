@@ -1,4 +1,4 @@
-import { Grade, WorkSchedule } from '@/models/IApplicationsFilter';
+import { Grade, WorkSchedule } from '@/models/ICandidatesFilter';
 
 export interface Vacancy {
     id: number;

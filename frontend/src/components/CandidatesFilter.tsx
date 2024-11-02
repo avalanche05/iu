@@ -11,12 +11,10 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { ApplicationStatus, ApplicationStatusLabels } from '@/api/models';
-import { Grade, GradeLabels, WorkSchedule, WorkScheduleLabels } from '@/models/IApplicationsFilter';
+import { Grade, GradeLabels, WorkSchedule, WorkScheduleLabels } from '@/models/ICandidatesFilter';
 import { useStores } from '@/hooks/useStores';
 import Folders from './Folders';
 import { observer } from 'mobx-react-lite';
-import { Switch } from './ui/switch';
-import { Label } from './ui/label';
 
 const ApplicationsFilter = observer(() => {
     const { rootStore } = useStores();
@@ -42,7 +40,7 @@ const ApplicationsFilter = observer(() => {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        rootStore.setApplicationFilter({
+        rootStore.setCandidatesFilter({
             name: formData.name || null,
             city: formData.city || null,
             position: formData.position || null,
@@ -174,15 +172,6 @@ const ApplicationsFilter = observer(() => {
                             value={formData.city}
                             onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                         />
-                    </div>
-
-                    <div className='flex items-center space-x-2'>
-                        <Switch
-                            checked={rootStore.useRanking}
-                            onCheckedChange={(value) => rootStore.setUseRanking(value)}
-                            id='airplane-mode'
-                        />
-                        <Label htmlFor='airplane-mode'>Отранжировать кандидатов</Label>
                     </div>
 
                     <div className='flex space-x-2'>
