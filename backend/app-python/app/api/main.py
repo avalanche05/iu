@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.routes import application, candidate, folder, resume, user, vacancy, generate, interview
+from app.api.routes import application, candidate, folder, resume, user, vacancy, generate, interview, competence
 
 # from app.api.routes import items, login, users, utils
 from app.api.routes.common import health
@@ -19,3 +19,4 @@ api_router.include_router(resume.router, prefix="/resumes", tags=["resume"])
 api_router.include_router(folder.router, prefix="/folders", tags=["folder"])
 api_router.include_router(generate.router, prefix="/generate", tags=["generate"])
 api_router.include_router(interview.router, prefix="/interviews", tags=["interview"])
+api_router.include_router(competence.router, prefix="/competences", tags=["competence"])
