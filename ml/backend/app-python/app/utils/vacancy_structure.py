@@ -18,6 +18,8 @@ class Vacancy(BaseModel):
     grade: str
     competencies: List[Competency]
 
+def preprocess_str(s: str):
+    return s.strip().strip('(').strip(')').strip().strip("'").strip().strip('"').strip("'").replace("\n", '').replace('\\n', '').replace('\\', '')
 
 def main(pdf_path: str):
     reader = ReadResume(pdf_path)
@@ -36,8 +38,9 @@ def main(pdf_path: str):
     resume_structured = model.run(prompt=prompt, max_tokens=500,
                                   temperature=0.5, schema=schema_json)
 
-    data = json.loads(
-        resume_structured.replace('json\n', "").replace("```", "").replace("\n", ""))
+    resume_structured = preprocess_str(resume_structured)
+    
+    data = json.loads(resume_structured)
     return data
 
 
