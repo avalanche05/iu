@@ -5,3 +5,4 @@ from .token import *
 from .user import *
 from .vacancy import *
 from .competence import *
+from .metric import *

@@ -13,5 +13,4 @@ def get_all(session: Session) -> list[str]:
         candidate_competencies = json.loads(db_candidate.competencies)
         competencies += [candidate_competence.get("name") for candidate_competence in candidate_competencies]
 
-    print(competencies)
-    return competencies
+    return set(competencies)
