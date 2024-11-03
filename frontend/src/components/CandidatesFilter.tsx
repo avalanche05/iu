@@ -17,6 +17,7 @@ import { observer } from 'mobx-react-lite';
 import { Label } from './ui/label';
 import MultipleSelector, { Option } from './ui/multiple-selector';
 import { toast } from './ui/use-toast';
+import { Skeleton } from './ui/skeleton';
 
 const CandidatesFilter = observer(() => {
     const { rootStore } = useStores();
@@ -106,22 +107,26 @@ const CandidatesFilter = observer(() => {
                                 Требуемые навыки
                             </Label>
 
-                            <MultipleSelector
-                                value={selectedCompetencies}
-                                onChange={setSelectedCompetencies}
-                                defaultOptions={[...new Set(rootStore.competencies)]?.map(
-                                    (competency) => ({
-                                        label: competency,
-                                        value: competency,
-                                    })
-                                )}
-                                placeholder='Выберите компетенции...'
-                                emptyIndicator={
-                                    <p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>
-                                        Нет подходящих компетенций
-                                    </p>
-                                }
-                            />
+                            {rootStore.competencies.length ? (
+                                <MultipleSelector
+                                    value={selectedCompetencies}
+                                    onChange={setSelectedCompetencies}
+                                    defaultOptions={[...new Set(rootStore.competencies)]?.map(
+                                        (competency) => ({
+                                            label: competency,
+                                            value: competency,
+                                        })
+                                    )}
+                                    placeholder='Выберите компетенции...'
+                                    emptyIndicator={
+                                        <p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>
+                                            Нет подходящих компетенций
+                                        </p>
+                                    }
+                                />
+                            ) : (
+                                <Skeleton className='h-10' />
+                            )}
                         </div>
                     </div>
 
