@@ -215,7 +215,7 @@ async def upload_resume_voice(
     return VoiceProcessSession(
         session_id=session_id,
         is_finished=data["is_finished"],
-        message=data["competencies"],
+        interview=data["interview"],
     )
 
 
@@ -224,6 +224,7 @@ async def voice_session(
         session_id: str,
         db_session: SessionDep,
         db_user: CurrentUser,
+        candidate_id: int,
 ) -> VoiceProcessSession:
     
     response = requests.get("http://185.187.90.215:7001/interview/analyze/" + session_id)
@@ -243,7 +244,8 @@ async def voice_session(
                 competencies=data["interview"]["competencies"],
             ),
             user=db_user,
+            candidate_id=candidate_id,
         )
-        res.interview = serializers.get_interview(db_interview)
+        res.interview = get_interview(db_interview)
     
     return res
