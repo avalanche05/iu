@@ -11,6 +11,12 @@ services:
     restart: always
     ports:
       - 8181:8000
+  ml-server:
+    build:
+      context: ml-commits/backend/app-python/
+    restart: always
+    ports:
+      - 9002:8000
   git-server:
     build:
       context: backend/app-git/
