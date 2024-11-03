@@ -16,8 +16,5 @@ PyMuPDF
 python-docx
 python-multipart==0.0.12
 boto3==1.35.34
-<<<<<<< HEAD
 requests
-=======
 easyocr
->>>>>>> e31d75bc3ac07b4f9c7c22266c145d06d5b5dff1
