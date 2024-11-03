@@ -11,13 +11,13 @@ class ResumeProcess(BaseModel):
 
 
 class Candidate(BaseModel):
-    name: str
+    nickname: str
     phone: str
     email: str
     contacts: str
     skills: list[str]
     experience: float
-    position: str
+    grade: str
     grade: str
     speciality: str
     education: str
@@ -55,8 +55,8 @@ class Folder(BaseModel):
 
 
 class CandidateFeedback(BaseModel):
-    name: str
-    position: str
+    nickname: str
+    grade: str
     summary: str
 
 
