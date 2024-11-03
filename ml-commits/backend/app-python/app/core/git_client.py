@@ -1,3 +1,4 @@
+import requests
 import os
 import requests
 
@@ -27,7 +28,9 @@ class GitRepo:
         
 
 
+
 git_repo = GitRepo(url=GIT_SERVER_URL)
+
 
 def get_commits(repo_url: str, contributor: str) -> list[dict]:
 
