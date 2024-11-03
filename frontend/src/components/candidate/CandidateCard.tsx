@@ -8,7 +8,12 @@ import AddCandidateToFolderButton from '../AddCandidateToFolderButton';
 import AddToComparisionButton from '../AddToComparisionButton';
 import GenerateFeedbackBlock from '../GenerateFeedbackBlock';
 import RadarChart from '../RadarChart';
-import { candidateABorderColor, candidateAColor } from '@/constants/colors';
+import {
+    candidateABorderColor,
+    candidateAColor,
+    vacancyBorderColor,
+    vacancyColor,
+} from '@/constants/colors';
 
 type Props = {
     candidate: Candidate;
@@ -26,6 +31,30 @@ const CandidateCard = ({ candidate }: Props) => {
             backgroundColor: candidateAColor,
             borderColor: candidateABorderColor,
         },
+        ...(candidate.technical_interview_result
+            ? [
+                  {
+                      label: 'Оценка по техническому интервью',
+                      backgroundColor: vacancyColor,
+                      borderColor: vacancyBorderColor,
+                      data: labels.map((label) => {
+                          const interviewLabels =
+                              candidate.technical_interview_result.competencies?.map(
+                                  (skill) => skill.name
+                              );
+
+                          const interviewData =
+                              candidate.technical_interview_result.competencies?.map(
+                                  (skill) => skill.proficiency
+                              );
+
+                          const skillIndex = interviewLabels?.indexOf(label);
+
+                          return skillIndex !== -1 ? interviewData[skillIndex] : 0.1;
+                      }),
+                  },
+              ]
+            : []),
     ];
 
     return (

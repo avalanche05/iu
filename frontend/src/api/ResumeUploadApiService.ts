@@ -25,7 +25,10 @@ class ResumeUploadApiService {
         return response;
     }
 
-    public async uploadInterview(file: File): Promise<InterviewUploadResponse> {
+    public async uploadInterview(
+        file: File,
+        candidateId: number
+    ): Promise<InterviewUploadResponse> {
         const formData = new FormData();
 
         formData.append('file', file);
@@ -35,13 +38,23 @@ class ResumeUploadApiService {
                 'Content-Type': 'multipart/form-data',
             },
             timeout: 510000,
+            params: {
+                candidate_id: candidateId,
+            },
         });
 
         return response;
     }
 
-    public async fetchInterviewStatus(sessionId: string): Promise<InterviewUploadResponse> {
-        const response = await get<InterviewUploadResponse>(`/api/v1/resumes/voice/${sessionId}`);
+    public async fetchInterviewStatus(
+        sessionId: string,
+        candidateId: number
+    ): Promise<InterviewUploadResponse> {
+        const response = await get<InterviewUploadResponse>(`/api/v1/resumes/voice/${sessionId}`, {
+            params: {
+                candidate_id: candidateId,
+            },
+        });
 
         return response;
     }
