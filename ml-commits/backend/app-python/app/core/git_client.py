@@ -1,4 +1,7 @@
+import os
 import requests
+
+GIT_SERVER_URL = os.environ.get("GIT_SERVER_URL", "http://misis.tech:7001")
 class GitRepo:
     def __init__(self, url: str):
         self.server_url = url
@@ -24,7 +27,7 @@ class GitRepo:
         
 
 
-git_repo = GitRepo(url="http://misis.tech:7001")
+git_repo = GitRepo(url=GIT_SERVER_URL)
 
 def get_commits(repo_url: str, contributor: str) -> list[dict]:
 

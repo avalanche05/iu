@@ -1,3 +1,5 @@
+import os
+
 import git
 from git import Repo
 import os
@@ -6,7 +8,7 @@ from fastapi import APIRouter, HTTPException
 
 
 router = APIRouter()
-REPO_DIR = "/app/repos"
+REPO_DIR = os.environ.get("REPO_DIR", "/home/ilinivan/repos")
 @router.get("/commits/")
 def get_commits(repo_url: str, contributor: str):
     repo_name = repo_url.split("/")[-1].split(".")[0]

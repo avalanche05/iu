@@ -1,10 +1,11 @@
+import os
 import random
 import requests
 import json
 
 from pydantic import BaseModel
 from typing import List, Dict
-
+GIT_SERVER_URL = os.environ.get("GIT_SERVER_URL", "http://misis.tech:7001")
 
 class Competency(BaseModel):
     name: str
@@ -107,7 +108,7 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
             batches_count_for_ext = 0
             random.shuffle(data[key])
             for i, file_path in enumerate(data[key]):
-                url = 'http://misis.tech:9001/code/'
+                url = GIT_SERVER_URL+ '/code/'
                 params = {
                     'repo_url': repo_url,
                     'contributor': contributor,
