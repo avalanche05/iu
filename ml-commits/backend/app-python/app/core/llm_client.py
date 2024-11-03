@@ -25,7 +25,7 @@ exts = [
     '.lua',  # Lua
 ]
 def preprocess_str(s: str):
-    return s.strip().strip('(').strip(')').strip().strip('"').strip("'").replace("\n", '').replace('\\n', '').replace('\\', '')
+    return s.strip().strip('(').strip(')').strip().strip("'").strip().strip('"').strip("'").replace("\n", '').replace('\\n', '').replace('\\', '')
 class LlmRun:
     def __init__(self, url: str, system_promt: str="You are a helpful assistant."):
         self.llm_url = url
@@ -81,7 +81,7 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
             batches_count_for_ext = 0
             random.shuffle(data[key])
             for i, file_path in enumerate(data[key]):
-                url = 'http://misis.tech:8001/code'
+                url = 'http://misis.tech:7001/code/'
                 params = {
                     'repo_url': repo_url,
                     'contributor': contributor,
