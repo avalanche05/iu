@@ -15,7 +15,7 @@ export interface UploadFile {
     candidate: Candidate;
 }
 
-export interface Interview {
+interface VoiceInterview {
     summary: string;
     competencies: Competency[];
     id: number;
@@ -24,5 +24,5 @@ export interface Interview {
 export interface InterviewUploadResponse {
     session_id: string;
     is_finished: boolean;
-    interview: Interview;
+    interview: VoiceInterview;
 }

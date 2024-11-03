@@ -1,7 +1,6 @@
 import { useAuth } from '@/auth';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LoaderButton } from '@/components/ui/loader-button';
@@ -67,23 +66,6 @@ export function Login() {
                                 required
                             />
                         </div>
-
-                        <div className='flex items-center space-x-2'>
-                            <Checkbox required id='terms' />
-                            <label
-                                htmlFor='terms'
-                                className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
-                            >
-                                Согласен на обработку персональных данных
-                            </label>
-                        </div>
-                        <a
-                            href='https://storage.yandexcloud.net/hack-s3/%D0%A1%D0%BE%D0%B3%D0%BB%D0%B0%D1%81%D0%B8%D0%B5_%D0%BD%D0%B0_%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D1%83_%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D1%85_%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85.docx'
-                            target='_blank'
-                            className='text-sm font-medium text-blue-600 hover:underline'
-                        >
-                            Согласие на обработку персональных данных
-                        </a>
 
                         <LoaderButton isLoading={loading} type='submit' className='w-full'>
                             Войти
