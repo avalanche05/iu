@@ -6,7 +6,7 @@ def get_interview(db_interview: models.Interview) -> schemas.Interview:
     return schemas.Interview(
         id=db_interview.id,
         summary=db_interview.summary,
-        competeicies=get_competencies(db_interview.competencies)
+        competencies=get_competencies(db_interview.competencies)
     )
 
 
