@@ -18,3 +18,6 @@ def get_code(repo_url: str, contributor: str) -> dict:
     files = git_client.get_repo_files(repo_url)
     result = llm_client.get_code_summary(repo_url, contributor, data=files)
     return result
+
+@router.get("/profile")
+def get_profile(profile_nickname: str) -> dict:
