@@ -6,12 +6,12 @@ import { RequireUnauth } from './auth/RequireUnauth';
 import { Dashboard } from './components/Dashboard';
 import { Toaster } from './components/ui/toaster';
 import { Pages } from './router/constants';
-import Applications from './pages/Applications';
+import Candidates from './pages/Candidates';
 import Vacancies from './pages/Vacancies';
 import Comparision from './pages/Comparision';
-import Uploader from './pages/Uploader';
 import Statistics from './pages/Statistics';
 import InterviewFeedback from './pages/InterviewFeedback';
+import VacancyDetails from './pages/VacancyDetails';
 
 function App() {
     return (
@@ -33,7 +33,7 @@ function App() {
                         element={
                             <RequireAuth>
                                 <Dashboard>
-                                    <Applications />
+                                    <Candidates />
                                 </Dashboard>
                             </RequireAuth>
                         }
@@ -49,6 +49,16 @@ function App() {
                         }
                     />
                     <Route
+                        path={`/${Pages.VacancyDetails}`}
+                        element={
+                            <RequireAuth>
+                                <Dashboard>
+                                    <VacancyDetails />
+                                </Dashboard>
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
                         path={`/${Pages.Comparision}`}
                         element={
                             <RequireAuth>
@@ -58,16 +68,7 @@ function App() {
                             </RequireAuth>
                         }
                     />
-                    <Route
-                        path={`/${Pages.Uploader}`}
-                        element={
-                            <RequireAuth>
-                                <Dashboard>
-                                    <Uploader />
-                                </Dashboard>
-                            </RequireAuth>
-                        }
-                    />
+
                     <Route
                         path={`/${Pages.Statistics}`}
                         element={
@@ -93,7 +94,7 @@ function App() {
                         element={
                             <RequireAuth>
                                 <Dashboard>
-                                    <Applications />
+                                    <Candidates />
                                 </Dashboard>
                             </RequireAuth>
                         }

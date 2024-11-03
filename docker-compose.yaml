@@ -17,6 +17,14 @@ services:
     restart: always
     ports:
       - 9002:8000
+  git-server:
+    build:
+      context: backend/app-git/
+    restart: always
+    volumes:
+      - /home/ilinivan/repos:/app/repos
+    ports:
+      - 9001:8000
   ml-resume:
     build:
       context: ml/backend/app-python/

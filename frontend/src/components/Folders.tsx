@@ -58,9 +58,7 @@ const Folders = observer(() => {
                                 onClick={() => rootStore.setActiveFolderId(null)}
                             >
                                 Все
-                                <span className='ml-2 text-xs'>
-                                    {rootStore.applications?.length}
-                                </span>
+                                <span className='ml-2 text-xs'>{rootStore.candidates?.length}</span>
                             </Button>
 
                             {rootStore.folders.map((folder, index) => (

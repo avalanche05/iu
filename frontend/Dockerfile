@@ -4,8 +4,6 @@ WORKDIR /app
 
 COPY . /app
 
-COPY .env /app/.env
-
 RUN npm install -g pnpm --global-dir=/usr/local/lib/pnpm
 
 RUN pnpm install

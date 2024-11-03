@@ -1,5 +1,3 @@
-import { ApplicationStatus } from '@/api/models';
-
 export enum Grade {
     Junior = 'junior',
     Middle = 'middle',
@@ -24,26 +22,16 @@ export const WorkScheduleLabels: Record<WorkSchedule, string> = {
     [WorkSchedule.Remote]: 'Удаленка',
 };
 
-export interface IApplicationsFilter {
-    name: string | null;
-    city: string | null;
-    position: string | null;
-    speciality: string | null;
+export interface ICandidatesFilter {
+    nickname: string | null;
     grade: Grade | null;
-    experience: string | null;
-    workSchedule: WorkSchedule | null;
-    applicationStatus: ApplicationStatus | null;
-    vacancyId: number | null;
+    experience: number | null;
+    competencies: string[] | null;
 }
 
-export const defaultApplicationsFilter: IApplicationsFilter = {
-    name: null,
-    city: null,
-    position: null,
-    speciality: null,
+export const defaultCandidatesFilter: ICandidatesFilter = {
+    nickname: null,
     grade: null,
     experience: null,
-    workSchedule: null,
-    applicationStatus: null,
-    vacancyId: null,
+    competencies: null,
 };

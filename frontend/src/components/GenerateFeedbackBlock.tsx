@@ -5,21 +5,17 @@ import GenerateFeedbackApiServie from '@/api/GenerateFeedbackApiServie';
 import { Loader2 } from 'lucide-react';
 
 type Props = {
-    vacancyId: number;
     candidateId: number;
 };
 
-const GenerateFeedbackBlock = ({ vacancyId, candidateId }: Props) => {
+const GenerateFeedbackBlock = ({ candidateId }: Props) => {
     const [generatedText, setGeneratedText] = useState('');
     const [isApproveLoading, setIsApproveLoading] = useState(false);
     const [isRejectLoading, setIsRejectLoading] = useState(false);
 
     return (
         <>
-            <p className='text-sm'>
-                Составить текст сообщения кандидату на основе его профиля и вакансии, на которую он
-                подался.
-            </p>
+            <p className='text-sm'>Составить текст сообщения кандидату на основе его профиля.</p>
 
             <div className='space-y-2'>
                 <Button
@@ -29,7 +25,6 @@ const GenerateFeedbackBlock = ({ vacancyId, candidateId }: Props) => {
 
                         GenerateFeedbackApiServie.fetchApproveFeedback({
                             candidateId,
-                            vacancyId,
                         })
                             .then(({ message }) => {
                                 setGeneratedText(message);
@@ -53,7 +48,6 @@ const GenerateFeedbackBlock = ({ vacancyId, candidateId }: Props) => {
 
                         GenerateFeedbackApiServie.fetchRejectFeedback({
                             candidateId,
-                            vacancyId,
                         })
                             .then(({ message }) => {
                                 setGeneratedText(message);

@@ -3,7 +3,8 @@ import os
 
 from fastapi import APIRouter
 
-from app.schemas import ResumeProcess, ResumeProcessResponse, Candidate, FeedbackRequest, Feedback, Vacancy, CandidateVacancy
+from app.schemas import ResumeProcess, ResumeProcessResponse, Candidate, FeedbackRequest, Feedback, Vacancy, \
+    CandidateVacancy
 from app.api.deps import S3ClientDep
 from app.utils.resume_structure import main as file_to_json
 from app.utils.s3 import get_file as s3_get_file
@@ -11,6 +12,7 @@ from app.utils.s3 import get_file as s3_get_file
 from app.core.autocomplete_answer import main as generate_feedback
 
 router = APIRouter()
+
 
 @router.post("/resume/process")
 async def process_resume(resume_process: ResumeProcess, s3_client: S3ClientDep) -> ResumeProcessResponse:
@@ -25,19 +27,14 @@ async def process_resume(resume_process: ResumeProcess, s3_client: S3ClientDep) 
 
     return ResumeProcessResponse(
         candidate=Candidate(
-            name=data["name"],
-            phone=data["phone"],
+            nickname=data["nickname"],
             email=data["email"],
-            contacts=data["contacts"],
-            skills=data["skills"].split(", "),
-            experience=data["experience"],
-            position=data["position"],
+            github_url=data["github_url"],
+            competencies=data["competencies"],
+            experience_years=data["experience_years"],
             grade=data["grade"],
-            speciality=data["speciality"],
-            education=data["education"],
             summary=data["summary"],
-            city="Moscow",
-            work_format="online",
+            code_quality=data["code_quality"],
         )
     )
 
@@ -46,7 +43,7 @@ async def process_resume(resume_process: ResumeProcess, s3_client: S3ClientDep) 
 async def process_resume(feedback_request: FeedbackRequest) -> Feedback:
     message = generate_feedback(data={
         "target_action": feedback_request.action,
-        "name": feedback_request.candidate.name,
+        "name": feedback_request.candidate.nickname,
         "position": feedback_request.vacancy.position,
         "summary": feedback_request.candidate.summary,
         "description": feedback_request.vacancy.description,
