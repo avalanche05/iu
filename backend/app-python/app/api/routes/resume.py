@@ -27,7 +27,6 @@ class ResumeProcessorThread(threading.Thread):
             files: list[str],
             db_session,
             s3_client,
-            vacancy_id: int | None = None,
             user: User | None = None,
     ):
         threading.Thread.__init__(self)
@@ -39,7 +38,6 @@ class ResumeProcessorThread(threading.Thread):
         self._db_session = db_session
         self.all_files = copy.copy(files)
         self._s3_client = s3_client
-        self.vacancy_id = vacancy_id
         self.db_user = user
 
         for file_key in files:
@@ -71,12 +69,6 @@ class ResumeProcessorThread(threading.Thread):
             )
             
             with self.lock:
-
-                resume_link = self._s3_client.generate_presigned_url(
-                    "get_object",
-                    Params={"Bucket": "hack-s3", "Key": file_key},
-                    ExpiresIn=7 * 86400,
-                )
 
                 db_vacancy = crud.vacancy.create(
                     self._db_session,
@@ -124,7 +116,6 @@ async def upload_resume(
         files=success_files,
         db_session=db_session,
         s3_client=s3_client,
-        vacancy_id=vacancy_id,
         user=db_user,
     )
 
