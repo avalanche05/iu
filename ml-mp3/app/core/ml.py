@@ -94,5 +94,9 @@ class InterviewToText:
 
 speech_model = InterviewToText()
 def get_mp3_analyze(mp3_path: str, position: str) -> list[dict]:
-    result = preprocess_str(speech_model.run(mp3_path, {"position": position}))
-    return json.loads(result)
+    raw_result = preprocess_str(speech_model.run(mp3_path, {"position": position}))
+    result = json.loads(raw_result)
+    return {
+        "summary": "TODO SUMMARY",
+        "competencies": result,
+    }

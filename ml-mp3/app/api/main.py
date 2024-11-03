@@ -38,7 +38,10 @@ class ResumeProcessorThread(threading.Thread):
             self._result = {
                 "file_name": file_name,
                 "is_success": True,
-                "competencies": result,
+                "interview": {
+                    "competencies": result["competencies"],
+                    "summary": result["summary"],
+                    },
             }
 
 
