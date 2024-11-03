@@ -91,20 +91,22 @@ class InterviewToText:
         chunk_size = 10000
         for i in range(0, len(audio_transcription['text']), chunk_size):
             # print(audio_transcription)
-            prompt = f"""Используй Context это текст интервью на вакансию - {vacancy_dict['position']}, чтобы разложить на competencies - это технологии, которые он упоминал, где name - название технологии, proficiency - насколько хорошо он знает эту технологию от 0 до 1;
-        summary - кратко общее впечатление о кандидате, которому проводили интервью.
+            prompt = f"""Используй Context как текст интервью на вакансию - {vacancy_dict['position']}.
+        competencies - это технологии, которые он упоминал: name - название технологии, proficiency - оценка знания технологии по Context от 0 - если ничего не упоминул, 1 - если подробно рассказал о технологии.
+        summary - краткое общее впечатление о кандидате, которому проводили интервью.
+        Тебе нужно обязательно оценить по Context следующие компетенции, если они не были упомянуты в Context, то оценить их заново от 0 до 1 competencies_candidate: {str(competencies_candidate)}.
+        Если компетенции из competencies_candidate не пересекаются с тем, что есть в Context, уменьши proficiency в 2 раза.
         Context:
         {audio_transcription['text'][i:i + chunk_size]}
-        Отвечай без объяснений.
+        Отвечай без объяснений. Обязательно вставь competencies_candidate.
         """
 
             text = json.loads(preprocess_str(
-                self.llm_model.run(prompt=prompt, max_tokens=500, temperature=0.5, schema=self.schema_json)))
+                self.llm_model.run(prompt=prompt, max_tokens=500, temperature=0.6, schema=self.schema_json)))
             print(text)
             competencies += str(text['competencies'])
             summaries += text['summary']
         promt = f"""Сделай суммаризацию по данным о компетенциям, где даны технологии и их качество. Убери, если там есть НЕ технологии. Мне нужно вывести в таком же формате, как я тебе даю.
-    Тебе надо обязательно указать в ответе следующие компетеннции: {str(competencies_candidate)}
     Context: {competencies}
     Отвечай без объяснений. Отвечай только в формате списка json. Иначе штраф 10000000 долларов.
     """
