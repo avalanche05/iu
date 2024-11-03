@@ -57,7 +57,7 @@ const CandidatesFilter = observer(() => {
                 <form onSubmit={(e) => handleSubmit(e)} className='flex flex-col space-y-4 mb-4'>
                     <div className='flex space-x-2'>
                         <Input
-                            placeholder='Ник на GitHub'
+                            placeholder='Ник на GitHub / Имя'
                             className='flex-1'
                             name='nickname'
                             value={formData.nickname}

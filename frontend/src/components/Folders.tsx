@@ -34,7 +34,7 @@ const Folders = observer(() => {
             .catch(() => {
                 toast({
                     title: 'Ошибка',
-                    description: 'Не удалось добавить папку',
+                    description: 'Не удалось добавить проект',
                     variant: 'destructive',
                 });
             })
@@ -58,7 +58,6 @@ const Folders = observer(() => {
                                 onClick={() => rootStore.setActiveFolderId(null)}
                             >
                                 Все
-                                <span className='ml-2 text-xs'>{rootStore.candidates?.length}</span>
                             </Button>
 
                             {rootStore.folders.map((folder, index) => (
@@ -87,7 +86,7 @@ const Folders = observer(() => {
                         </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle>Добавить папку</DialogTitle>
+                                <DialogTitle>Добавить проект</DialogTitle>
                             </DialogHeader>
                             <div className='grid gap-4 py-4'>
                                 <div>
