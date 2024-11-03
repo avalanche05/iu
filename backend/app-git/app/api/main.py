@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException
 
 
 router = APIRouter()
-REPO_DIR = "/home/ilinivan/repos"
+REPO_DIR = "/app/repos"
 @router.get("/commits/")
 def get_commits(repo_url: str, contributor: str):
     repo_name = repo_url.split("/")[-1].split(".")[0]
