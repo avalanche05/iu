@@ -88,7 +88,7 @@ def get_candidate(commits: list[dict]) -> dict:
     raw = llm.run(f"""Мне нужно, используя данные коммитов из Context одного человека, сгенерировать один json со следующими полями: summary: str, competencies: name: str, proficiency: float
     summary - это кратко какой вклад был сделан кандидатом, его сильные и слабые стороны;
     competencies - это технологии, которые он использовал в своем проекте.
-    Context: {context}
+    Context: {context[:min(10000, len(context))]}
     Отвечай без объяснения. Мне нужен только json, никаких лишних символов. Штраф - 10000000000000$.
     """, max_tokens=500, temperature=0.5, schema=schema_json)
     print("text:", raw)
