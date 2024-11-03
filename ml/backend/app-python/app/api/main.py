@@ -3,41 +3,27 @@ import os
 
 from fastapi import APIRouter
 
-from app.schemas import ResumeProcess, ResumeProcessResponse, Candidate, FeedbackRequest, Feedback, Vacancy, \
-    CandidateVacancy
+from app.schemas import ResumeProcess, FeedbackRequest, Feedback
 from app.api.deps import S3ClientDep
-from app.utils.resume_structure import main as file_to_json
 from app.utils.s3 import get_file as s3_get_file
 
 from app.core.autocomplete_answer import main as generate_feedback
+from app.utils import vacancy_structure
 
 router = APIRouter()
 
-
 @router.post("/resume/process")
-async def process_resume(resume_process: ResumeProcess, s3_client: S3ClientDep) -> ResumeProcessResponse:
+async def process_resume(resume_process: ResumeProcess, s3_client: S3ClientDep) -> dict:
     file_key = resume_process.file_key
-
     file_bytes = s3_get_file(s3_client, file_key)
 
-    with open(f"data/{file_key}", "wb") as f:
+    new_file_path = f"data/{file_key}"
+    with open(new_file_path, "wb") as f:
         f.write(file_bytes)
 
-    data = file_to_json(f"data/{file_key}")
+    result = vacancy_structure.main(new_file_path)
 
-    return ResumeProcessResponse(
-        candidate=Candidate(
-            nickname=data["nickname"],
-            email=data["email"],
-            github_url=data["github_url"],
-            competencies=data["competencies"],
-            experience_years=data["experience_years"],
-            grade=data["grade"],
-            summary=data["summary"],
-            code_quality=data["code_quality"],
-        )
-    )
-
+    return result
 
 @router.post("/feedback/generate")
 async def process_resume(feedback_request: FeedbackRequest) -> Feedback:
