@@ -107,7 +107,7 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
             batches_count_for_ext = 0
             random.shuffle(data[key])
             for i, file_path in enumerate(data[key]):
-                url = 'http://misis.tech:7001/code/'
+                url = 'http://misis.tech:9001/code/'
                 params = {
                     'repo_url': repo_url,
                     'contributor': contributor,
