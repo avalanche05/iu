@@ -18,3 +18,4 @@ langchain
 langchain-community
 python-multipart==0.0.12
 boto3==1.35.34
+requests
