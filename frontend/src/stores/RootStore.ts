@@ -56,7 +56,7 @@ export class RootStore {
     }
 
     addCandidateToCompare(candidate: Candidate) {
-        if (this.candidatesToCompare.length >= 3) {
+        if (this.candidatesToCompare.length >= 2) {
             this.candidatesToCompare.shift();
         }
 
