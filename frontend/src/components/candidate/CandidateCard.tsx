@@ -35,7 +35,7 @@ const CandidateCard = ({ candidate }: Props) => {
                     <div className='cursor-pointer' onClick={() => setIsOpen(!isOpen)}>
                         <div className='flex items-center justify-between'>
                             <div className='flex items-center'>
-                                <h2 className='text-2xl font-bold'>Github: {candidate.nickname}</h2>
+                                <h2 className='text-2xl font-bold'>{candidate.nickname}</h2>
                             </div>
 
                             <CollapsibleTrigger asChild>
