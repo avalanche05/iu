@@ -100,7 +100,6 @@ async def upload_resume(
         storage: StorageDep,
         db_user: CurrentUser,
         files: list[UploadFile] = File(...),
-        vacancy_id: int | None = None,
 ) -> ResumeProcessSession:
     success_files = []
     error_files = []
