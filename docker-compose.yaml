@@ -11,6 +11,12 @@ services:
     restart: always
     ports:
       - 8181:8000
+  git-server:
+    build:
+      context: backend/app-git/
+    restart: always
+    ports:
+      - 9001:8000
   ml-resume:
     build:
       context: ml/backend/app-python/
