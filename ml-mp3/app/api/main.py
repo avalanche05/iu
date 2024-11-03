@@ -64,7 +64,7 @@ async def analyze_interwiew(
     storage[session_id] = resume_processor
     return {
         "is_finished": False,
-        "competencies": [],
+        "interview": None,
     }
 
 
@@ -79,14 +79,14 @@ async def get_interview_process_session(storage: StorageDep, session_id: str):
     if processor_thread._result:
         return {
             "is_finished": True,
-            "competencies": processor_thread._result["competencies"],
+            "interview": processor_thread._result["interview"],
         }
     if not processor_thread.is_alive():
         return {
             "is_finished": True,
-            "competencies": None,
+            "interview": None,
         }
     return {
         "is_finished": False,
-        "competencies": None,
+        "interview": None,
     }
