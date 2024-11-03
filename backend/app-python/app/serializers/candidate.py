@@ -39,7 +39,7 @@ def get_candidate_for_vacancy(db_candidate_for_vacancy: models.Candidate,
         technical_interview_result=None if db_candidate_for_vacancy.interview is None else interview.get_interview(
             db_candidate_for_vacancy.interview),
         compliance_percent=compliance_percent,
-        metrics=metric.get_metric(db_candidate.metrics)
+        metrics=metric.get_metric(db_candidate_for_vacancy.metrics)
     )
 
 
