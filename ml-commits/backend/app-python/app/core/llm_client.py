@@ -20,6 +20,7 @@ class Code(BaseModel):
     summary: str
     competencies: List[Competency]
     code_quality: float
+    code_quality_description: str
 
 
 BATCHES_FOR_EXT_LIMIT = 1
@@ -84,7 +85,7 @@ def get_candidate(commits: list[dict]) -> dict:
     schema = Commit.schema()
     schema_json = json.dumps(schema, indent=2)
     raw = llm.run(f"""Мне нужно, используя данные коммитов из Context одного человека, сгенерировать один json со следующими полями: summary: str, competencies: name: str, proficiency: float
-    summary - это кратко какой вклад был сделан кандидатом;
+    summary - это кратко какой вклад был сделан кандидатом, его сильные и слабые стороны;
     competencies - это технологии, которые он использовал в своем проекте.
     Context: {context}
     Отвечай без объяснения. Мне нужен только json, никаких лишних символов. Штраф - 10000000000000$.
@@ -128,9 +129,10 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
                 # files += '\n'
                 if (len(files) > 10000) or (i == len(data[key]) - 1) or i >= 50:
                     batches_count_for_ext += 1
-                    prompt = f"""Дай краткий анализ по написанному коду на языке {key}. Мне нужны поля summary - это кратко какой вклад был сделан кандидатом;
+                    prompt = f"""Дай краткий анализ по написанному коду на языке {key}. Мне нужны поля summary - это кратко какой вклад был сделан кандидатом, его сильные и слабые стороны;
                     competencies - это технологии, которые он использовал в своем проекте в виде name, proficiency - от 0 до 1;
-                    code_quality - дай оценку от 0 до 1 качество написанного кода.
+                    code_quality - дай оценку от 0 до 1 качество написанного кода;
+                    code_quality_description - дай пояснение к своему выбору code_quality для этого кандита.
                     Context: {files}.
                     Отвечай без объяснений. Дай ответ в формате json. Без лишних символов. Иначе штраф 1000000 долларов.
                     """
@@ -157,7 +159,7 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
             except Exception as e:
                 print(e)
     print("smrs", sumarries)
-    promt = f"""Дай харакетристику компетенции что умеет кандидат, используя данные о нем в Context.
+    promt = f"""Дай харакетристику компетенции что умеет кандидат, его сильные и слабые стороны используя данные о нем в Context.
     Context: {sumarries}
     Отвечай без объяснений. Пиши предложения, разделяй предложения точкой. Иначе штраф 10000000 долларов.
     """
