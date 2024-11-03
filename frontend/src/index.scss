@@ -94,6 +94,7 @@ header {
 
 .create-vacancy {
     max-height: calc(100vh - 200px);
+    overflow-y: scroll;
 }
 
 .vacancy-details {

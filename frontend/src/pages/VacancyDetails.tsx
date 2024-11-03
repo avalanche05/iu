@@ -47,7 +47,7 @@ function VacancyInfo({
 
                           const skillIndex = candidateLabels?.indexOf(label);
 
-                          return skillIndex !== -1 ? candidateDataset.data[skillIndex] : 0;
+                          return skillIndex !== -1 ? candidateDataset.data[skillIndex] : 0.1;
                       }),
                   },
               ]
