@@ -1,7 +1,7 @@
 from app import models, schemas
 
 
-def get_folder(db_folder: models.Folder) -> schemas.Folder:
+def get_folder(db_folder: models.Folder | None) -> schemas.Folder | None:
     return schemas.Folder(
         id=db_folder.id, name=db_folder.name, candidates_count=len(db_folder.candidates)
     )
