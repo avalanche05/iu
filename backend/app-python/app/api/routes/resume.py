@@ -186,6 +186,7 @@ async def get_resume_process_session(storage: StorageDep, db_user: CurrentUser, 
 async def upload_resume_voice(
         s3_client: S3ClientDep,
         db_user: CurrentUser,
+        db_session: SessionDep,
         candidate_id: int,
         file: UploadFile = File(...),
 ) -> VoiceProcessSession:
@@ -198,7 +199,7 @@ async def upload_resume_voice(
         file_content=file_content,
         file_type=file.content_type,
     )
-    db_candidate = crud.candidate.get_candidate(db_user.db_session, id=candidate_id)
+    db_candidate = crud.candidate.get_candidate(db_session, candidate_id=candidate_id)
     obj_cand = serializers.get_candidate(db_candidate)
     session_id = str(uuid4())
     print(file_key)
@@ -206,7 +207,7 @@ async def upload_resume_voice(
                              json={
                                  "file_key": file_key,
                                  "position": obj_cand.grade,
-                                 "competencies": obj_cand.competencies,
+                                 "competencies": [comp.dict() for comp in obj_cand.competencies],
                              })
 
     response.raise_for_status()
@@ -234,8 +235,7 @@ async def voice_session(
         is_finished=data["is_finished"],
         interview=None,
     )
-    
-    if res.is_finished and res.message is not None:
+    if data["interview"] is not None:
         db_interview = interview.create(
             session=db_session,
             interview=InterviewCreate(
