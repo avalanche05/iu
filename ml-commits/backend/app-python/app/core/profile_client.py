@@ -3,6 +3,7 @@ import asyncio
 from datetime import datetime
 import requests
 from pprint import pprint
+import os
 
 github_token = os.environ.get("github_token")
 
