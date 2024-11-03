@@ -23,3 +23,10 @@ class Folder(BaseEntity):
     candidates: Mapped[List["Candidate"]] = relationship(
         secondary=FolderCandidate, back_populates="folders"
     )
+
+    def __repr__(self):
+        return f"<Folder(id={self.id}, name='{self.name}')>"
+
+    def __str__(self):
+        return f"Folder: {self.name}, Description: {self.description}"
+

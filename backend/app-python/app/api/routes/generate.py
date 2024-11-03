@@ -34,7 +34,7 @@ async def generate_approve_feedback(
     vacancy = serializers.vacancy.get_vacancy(crud.vacancy.get_vacancy(db_session, vacancy_id))
 
     candidate_data = {
-        "name": candidate.name,
+        "name": candidate.nicknamename,
         "position": vacancy.position,
         "summary": candidate.summary,
     }
@@ -73,7 +73,7 @@ async def generate_approve_feedback(
     vacancy = serializers.vacancy.get_vacancy(crud.vacancy.get_vacancy(db_session, vacancy_id))
 
     candidate_data = {
-        "name": candidate.name,
+        "name": candidate.nickname,
         "position": vacancy.position,
         "summary": candidate.summary,
     }

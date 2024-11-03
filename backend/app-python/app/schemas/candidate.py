@@ -22,7 +22,7 @@ class CandidateCreate(BaseSchema):
 class Candidate(CandidateCreate):
     id: int
     technical_interview_result: Interview | None = None
-    folders: list[str]
+    folders: list[Folder]
 
 
 class CandidateForVacancy(Candidate):
