@@ -2,10 +2,7 @@ import { get, post } from './http';
 import { InterviewUploadResponse, ResumeUploadResponse } from './models';
 
 class ResumeUploadApiService {
-    public async uploadFiles(
-        files: File[],
-        vacancy_id: number | undefined
-    ): Promise<ResumeUploadResponse> {
+    public async uploadFiles(files: File[]): Promise<ResumeUploadResponse> {
         const formData = new FormData();
 
         files.forEach((file) => {
@@ -17,9 +14,6 @@ class ResumeUploadApiService {
                 'Content-Type': 'multipart/form-data',
             },
             timeout: 510000,
-            params: {
-                vacancy_id,
-            },
         });
 
         return response;
