@@ -6,11 +6,10 @@ from app.utils.ollama_run import LlamaRun
 
 
 def main(pdf_path: str):
-    template = """Use the following pieces of context to expand resume to fields in JSON-format:"name": string, "phone": string, "email": string, "contacts": string, "city":string, "work_format": string, "skills": string, "experience": float, "position": string, "grade": string, "speciality": string, "education":string, "summary": string.
-    experience - get number how long he woked in years, if now - 2024
-    summary - summarize work exeperience in two sentences;
-    work_format - 'ONLINE' or 'OFFLINE';
-    grade - write only: 'Junior', 'Middle' or 'Senior'.
+    template = """Use the following pieces of context to expand vacancy description to fields in JSON-format: "title": string, "grade": string, "description": string, "competencies": [{"name": string, "proficiency": float between 0 and 1}].
+    title - get vacancy title;
+    grade - write only: 'Junior', 'Middle' or 'Senior';
+    competencies - find key competencies/skills. Make it list of dicts with following content: "name": name of competence, "proficiency": float value of how well this competence should be known for this vacancy. It should have values between 0 and 1, where 0 is the lowest level of knowledge and 1 is the highest level of knowledge.
     Answer with only JSON-format text.
     Context:
     {context}
