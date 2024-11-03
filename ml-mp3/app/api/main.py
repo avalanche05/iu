@@ -14,9 +14,10 @@ class ResumeProcessorThread(threading.Thread):
     def __init__(
             self,
             session_id: str,
-            mp3_file_key: list[str],
+            mp3_file_key: str,
             s3_client,
             position: str,
+            compitencies: list[dict],
     ):
         threading.Thread.__init__(self)
         self.session_id = session_id
@@ -25,6 +26,7 @@ class ResumeProcessorThread(threading.Thread):
         self._s3_client = s3_client
         self._mp3_file_key = mp3_file_key
         self._position = position
+        self._compitencies = compitencies
     def run(self):
         file_key = self._mp3_file_key
         file_name = self._mp3_file_key.split("~!~")[-1]
@@ -33,7 +35,7 @@ class ResumeProcessorThread(threading.Thread):
         new_file_path = f"data/{file_key}"
         with open(new_file_path, "wb") as f:
             f.write(file_bytes)
-        result = get_mp3_analyze(new_file_path, "middle")
+        result = get_mp3_analyze(new_file_path, self._position, self._compitencies)
         with self.lock:
             self._result = {
                 "file_name": file_name,
@@ -58,6 +60,7 @@ async def analyze_interwiew(
         mp3_file_key=data["file_key"],
         s3_client=s3_client,
         position=data["position"],
+        compitencies=competencies,
     )
 
     resume_processor.start()
