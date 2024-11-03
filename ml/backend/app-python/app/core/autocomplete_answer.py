@@ -1,35 +1,36 @@
 from app.utils.ollama_run import LlamaRun
 
-
 def main(data):
-    template = """You are an HR. Write message to the candidate in a conversational style (for a messenger) using the following context:
-        Candidate name: {name}.
-        Vacancy name: {position}.
-        Message type - {target_action}. Explanation what message consists of:
-
-            - pending: поздороваться с кандидатом, сказать что ждём на интервью;
-
-            - hrAccepted: сказать что интервью будет в [ДАТА] и [ВРЕМЯ], дату и время можно в интерфейсе поменять на сайте;
-
-            - interviewerAccepted: поздравить с пройденными интервью, спросить про зарплатные ожидания;
-
-            - offer: напомнить кандидату, что он должен направить письмо с принятием предложения на работу;
-
-            - candidateAccepted:  отсылаем поздравительное письмо: добро пожаловать в команду.
-            
-            - reject: поблагодари кандидата, сделать отказ.
-
-    Example for 'pending': 'Привет, [name]! Мы ждём вас на интервью на позицию [position]. До скорой встречи!'
-
-    Answer briefly, without explanation, only in Russian. only write text that would say HR. Do not give your own comments. write the text for {target_action} type only."""
     model = LlamaRun(
-        template=template,
-        ollama_url="https://useful-kite-settled.ngrok-free.app",
-        model_name="llama3.1:8b",
-        temperature=0
+        url="https://vk-devinsight-case.olymp.innopolis.university",
+        system_promt="You're an HR from big tech company."
     )
-    text = model.run(name=data['name'],
-                     position=data['position'],
-                     target_action=data['target_action'])
+
+    prompt = f"""Ты HR, тебе надо дать обратную связь кандидату по Message type.
+            Имя канидата: {data['name']}.
+            Название вакансии: {data['position']}.
+            Message type - {data['target_action']}. Explanation what message consists of:
+
+                - pending: поздороваться с кандидатом, сказать что ждём на интервью;
+
+                - hrAccepted: сказать что интервью будет в [ДАТА] и [ВРЕМЯ], дату и время можно в интерфейсе поменять на сайте;
+
+                - interviewerAccepted: поздравить с пройденными интервью, спросить про зарплатные ожидания;
+
+                - offer: напомнить кандидату, что он должен направить письмо с принятием предложения на работу;
+
+                - candidateAccepted:  отсылаем поздравительное письмо: добро пожаловать в команду.
+
+                - reject: поблагодари кандидата, сделать отказ.
+
+            Вот пример для 'pending': 'Привет, [name]! Мы ждём вас на интервью на позицию [position]. До скорой встречи!'
+
+        Отвечай кратко."""
+    text = model.run(prompt=prompt, max_tokens=500, temperature=0.5)
 
     return text
+
+
+# if __name__ == "__main__":
+#     result = main(data={"name": "Иван Иванов", "position": "Middle python develover", "target_action": "candidateAccepted"})
+#     print(result)

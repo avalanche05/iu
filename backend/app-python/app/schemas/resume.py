@@ -1,13 +1,13 @@
 from typing import Literal
 
 from app.common import BaseSchema
-from app.schemas.candidate import Candidate
+from app.schemas.vacancy import Vacancy
 
 
 class FileResult(BaseSchema):
     file_name: str
     message: str | None = ""
-    candidate: Candidate | None = None
+    vacancy: Vacancy | None = None
 
 
 class ResumeProcessSession(BaseSchema):
