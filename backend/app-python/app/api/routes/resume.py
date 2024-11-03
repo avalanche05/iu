@@ -11,11 +11,12 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from app import crud, serializers, utils
 from app.api.deps import S3ClientDep, SessionDep, StorageDep, CurrentUser
-from app.crud import auth
+from app.crud import auth, interview, candidate
 from app.models.user import User
 from app.models.candidate import Candidate
-from app.schemas import FileResult, ResumeProcessSession, VoiceProcessSession, VacancyCreate
+from app.schemas import FileResult, ResumeProcessSession, VoiceProcessSession, VacancyCreate, InterviewCreate
 from app.serializers.user import get_user
+from app.serializers.interview import get_interview
 
 router = APIRouter()
 
@@ -26,7 +27,6 @@ class ResumeProcessorThread(threading.Thread):
             session_id: str,
             files: list[str],
             db_session,
-            s3_client,
             user: User | None = None,
     ):
         threading.Thread.__init__(self)
@@ -37,7 +37,6 @@ class ResumeProcessorThread(threading.Thread):
         self._processed_files = {}
         self._db_session = db_session
         self.all_files = copy.copy(files)
-        self._s3_client = s3_client
         self.db_user = user
 
         for file_key in files:
@@ -115,7 +114,6 @@ async def upload_resume(
         session_id=session_id,
         files=success_files,
         db_session=db_session,
-        s3_client=s3_client,
         user=db_user,
     )
 
@@ -188,6 +186,7 @@ async def get_resume_process_session(storage: StorageDep, db_user: CurrentUser, 
 async def upload_resume_voice(
         s3_client: S3ClientDep,
         db_user: CurrentUser,
+        candidate_id: int,
         file: UploadFile = File(...),
 ) -> VoiceProcessSession:
     assert str(file.filename).endswith(".mp3")
@@ -199,13 +198,15 @@ async def upload_resume_voice(
         file_content=file_content,
         file_type=file.content_type,
     )
-
+    db_candidate = crud.candidate.get_candidate(db_user.db_session, id=candidate_id)
+    obj_cand = serializers.get_candidate(db_candidate)
     session_id = str(uuid4())
-
-    response = requests.post("http://51.250.25.30:5001/interview/analyze/" + session_id,
+    print(file_key)
+    response = requests.post("http://185.187.90.215:7001/interview/analyze/" + session_id,
                              json={
                                  "file_key": file_key,
-                                 "position": "сотрудник",
+                                 "position": obj_cand.grade,
+                                 "competencies": obj_cand.competencies,
                              })
 
     response.raise_for_status()
@@ -213,21 +214,36 @@ async def upload_resume_voice(
     return VoiceProcessSession(
         session_id=session_id,
         is_finished=data["is_finished"],
-        message=data["message"],
+        message=data["competencies"],
     )
 
 
 @router.get("/voice/{session_id}")
 async def voice_session(
         session_id: str,
+        db_session: SessionDep,
         db_user: CurrentUser,
 ) -> VoiceProcessSession:
-    response = requests.get("http://51.250.25.30:5001/interview/analyze/" + session_id)
+    
+    response = requests.get("http://185.187.90.215:7001/interview/analyze/" + session_id)
 
     response.raise_for_status()
     data = response.json()
-    return VoiceProcessSession(
+    res = VoiceProcessSession(
         session_id=session_id,
         is_finished=data["is_finished"],
-        message=data["message"],
+        interview=None,
     )
+    
+    if res.is_finished and res.message is not None:
+        db_interview = interview.create(
+            session=db_session,
+            interview=InterviewCreate(
+                summary=data["interview"]["summary"],
+                competencies=data["interview"]["competencies"],
+            ),
+            user=db_user,
+        )
+        res.interview = serializers.get_interview(db_interview)
+    
+    return res
