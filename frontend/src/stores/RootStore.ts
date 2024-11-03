@@ -1,4 +1,5 @@
 import CandidatesApiService from '@/api/CandidatesApiService';
+import CompenenciesApiService from '@/api/CompenenciesApiService';
 import FoldersApiService from '@/api/FoldersApiService';
 import {
     Candidate,
@@ -28,6 +29,9 @@ export class RootStore {
     vacanciesFilter: IVacanciesFilter = defauldVacanciesFilter;
 
     candidatesToCompare: CandidateToCompare[] = [];
+
+    competencies: string[] = [];
+    isCompetenciesLoading = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -141,5 +145,19 @@ export class RootStore {
 
     async fetchVacancyDetails({ vacancyId }: FetchVacancyDetailsParams) {
         return VacanciesApiService.fetchVacancyDetails({ vacancyId });
+    }
+
+    async fetchCompetencies() {
+        this.isCompetenciesLoading = true;
+
+        return CompenenciesApiService.fetchCompetencies()
+            .then((competencies) => {
+                this.competencies = competencies;
+
+                return competencies;
+            })
+            .finally(() => {
+                this.isCompetenciesLoading = false;
+            });
     }
 }

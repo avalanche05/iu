@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -14,19 +14,29 @@ import { Grade, GradeLabels } from '@/models/ICandidatesFilter';
 import { useStores } from '@/hooks/useStores';
 import Folders from './Folders';
 import { observer } from 'mobx-react-lite';
-import { Tag, TagInput } from 'emblor';
 import { Label } from './ui/label';
+import MultipleSelector, { Option } from './ui/multiple-selector';
+import { toast } from './ui/use-toast';
 
 const CandidatesFilter = observer(() => {
     const { rootStore } = useStores();
-    const [tags, setTags] = useState<Tag[]>([]);
-    const [activeTagIndex, setActiveTagIndex] = useState<number | null>(null);
+    const [selectedCompetencies, setSelectedCompetencies] = useState<Option[]>([]);
 
     const [formData, setFormData] = useState({
         nickname: '',
         grade: '',
         experience: '',
     });
+
+    useEffect(() => {
+        rootStore.fetchCompetencies().catch(() => {
+            toast({
+                title: 'Ошибка',
+                description: 'Не удалось загрузить компетенции',
+                variant: 'destructive',
+            });
+        });
+    }, [rootStore]);
 
     // Обработчик выбора для select полей
     const handleSelectChange = (name: string) => (value: string) => {
@@ -41,7 +51,9 @@ const CandidatesFilter = observer(() => {
             nickname: formData.nickname || null,
             grade: (formData.grade as Grade) || null,
             experience: +formData.experience || null,
-            competencies: tags.length ? tags.map((tag) => tag.text) : null,
+            competencies: selectedCompetencies.length
+                ? selectedCompetencies.map((option) => option.value)
+                : null,
         });
     };
 
@@ -94,17 +106,22 @@ const CandidatesFilter = observer(() => {
                                 Требуемые навыки
                             </Label>
 
-                            <div className='tag-input'>
-                                <TagInput
-                                    placeholder='Введите навыки'
-                                    tags={tags}
-                                    setTags={(newTags) => {
-                                        setTags(newTags);
-                                    }}
-                                    activeTagIndex={activeTagIndex}
-                                    setActiveTagIndex={setActiveTagIndex}
-                                />
-                            </div>
+                            <MultipleSelector
+                                value={selectedCompetencies}
+                                onChange={setSelectedCompetencies}
+                                defaultOptions={[...new Set(rootStore.competencies)]?.map(
+                                    (competency) => ({
+                                        label: competency,
+                                        value: competency,
+                                    })
+                                )}
+                                placeholder='Выберите компетенции...'
+                                emptyIndicator={
+                                    <p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>
+                                        Нет подходящих компетенций
+                                    </p>
+                                }
+                            />
                         </div>
                     </div>
 
@@ -120,7 +137,7 @@ const CandidatesFilter = observer(() => {
                                     experience: '',
                                 });
 
-                                setTags([]);
+                                setSelectedCompetencies([]);
                             }}
                         >
                             Очистить

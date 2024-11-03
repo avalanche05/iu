@@ -25,7 +25,8 @@ import { useStores } from '@/hooks/useStores';
 import { Grade, GradeLabels } from '@/models/ICandidatesFilter';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
-import { Tag, TagInput } from 'emblor';
+import MultipleSelector, { Option } from '@/components/ui/multiple-selector';
+import { Slider } from '@/components/ui/slider';
 
 const Vacancies = observer(() => {
     const { rootStore } = useStores();
@@ -35,14 +36,43 @@ const Vacancies = observer(() => {
     const [title, setTitle] = useState('');
     const [grade, setGrade] = useState<Grade | null>(null);
     const [description, setDescription] = useState('');
-    const [tags, setTags] = useState<Tag[]>([]);
-    const [activeTagIndex, setActiveTagIndex] = useState<number | null>(null);
+    const [selectedCompetencies, setSelectedCompetencies] = useState<Option[]>([]);
+    const [proficiency, setProficiency] = useState<Map<string, number>>(new Map());
+
+    const handleCompetencyChange = (competencies: Option[]) => {
+        setSelectedCompetencies(competencies);
+
+        const proficiencyMap = new Map<string, number>();
+
+        competencies.forEach((competency) => {
+            proficiencyMap.set(
+                competency.value,
+                proficiency.has(competency.value)
+                    ? proficiency.get(competency.value) || 0
+                    : grade === Grade.Junior
+                    ? 0.33
+                    : grade === Grade.Senior
+                    ? 1
+                    : 0.66
+            );
+        });
+
+        setProficiency(proficiencyMap);
+    };
 
     useEffect(() => {
         rootStore.fetchVacancies({}).catch(() => {
             toast({
                 title: 'Ошибка',
                 description: 'Не удалось загрузить вакансии',
+                variant: 'destructive',
+            });
+        });
+
+        rootStore.fetchCompetencies().catch(() => {
+            toast({
+                title: 'Ошибка',
+                description: 'Не удалось загрузить компетенции',
                 variant: 'destructive',
             });
         });
@@ -56,16 +86,17 @@ const Vacancies = observer(() => {
                 title,
                 grade: grade ?? Grade.Middle,
                 description,
-                competencies: tags.map((tag) => ({
-                    name: tag.text,
-                    proficiency: grade === Grade.Junior ? 0.33 : grade === Grade.Middle ? 0.66 : 1,
+                competencies: selectedCompetencies.map((competency) => ({
+                    name: competency.value,
+                    proficiency: proficiency.get(competency.value) || 0.66,
                 })),
             })
             .then(() => {
                 setTitle('');
                 setGrade(null);
                 setDescription('');
-                setTags([]);
+                setSelectedCompetencies([]);
+                setProficiency(new Map());
             })
             .finally(() => {
                 setIsEditOrganizationDialogOpen(false);
@@ -132,21 +163,52 @@ const Vacancies = observer(() => {
                                 </div>
 
                                 <div>
-                                    <Label htmlFor='team' className='text-right'>
+                                    <Label htmlFor='competencies' className='text-right'>
                                         Требуемые навыки
                                     </Label>
 
-                                    <div className='tag-input'>
-                                        <TagInput
-                                            placeholder='Введите навыки'
-                                            tags={tags}
-                                            setTags={(newTags) => {
-                                                setTags(newTags);
-                                            }}
-                                            activeTagIndex={activeTagIndex}
-                                            setActiveTagIndex={setActiveTagIndex}
-                                        />
-                                    </div>
+                                    <MultipleSelector
+                                        value={selectedCompetencies}
+                                        onChange={handleCompetencyChange}
+                                        defaultOptions={[...new Set(rootStore.competencies)]?.map(
+                                            (competency) => ({
+                                                label: competency,
+                                                value: competency,
+                                            })
+                                        )}
+                                        placeholder='Выберите компетенции...'
+                                        emptyIndicator={
+                                            <p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>
+                                                Нет подходящих компетенций
+                                            </p>
+                                        }
+                                    />
+                                </div>
+
+                                <div className='flex space-x-2 flex-col'>
+                                    <h3 className='text-base'>Уровень владения компетенциями</h3>
+
+                                    {Array.from(proficiency).map(([competency]) => (
+                                        <div key={competency} className='flex space-x-2'>
+                                            <div className='w-full'>
+                                                <Label className='text-right'>{competency}</Label>
+
+                                                <Slider
+                                                    className='w-full mt-2'
+                                                    onChange={(e) => {
+                                                        // eslint-disable-next-line
+                                                        // @ts-ignore
+                                                        proficiency.set(competency, e.target.value);
+                                                    }}
+                                                    defaultValue={[
+                                                        proficiency.get(competency) || 0.66,
+                                                    ]}
+                                                    max={1}
+                                                    step={0.1}
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
 
                                 <div>
