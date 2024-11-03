@@ -49,6 +49,7 @@ async def analyze_interwiew(
         session_id: str,
         data: dict,
 ) -> dict:
+    competencies = data["competencies"]
     resume_processor = ResumeProcessorThread(
         session_id=session_id,
         mp3_file_key=data["file_key"],
