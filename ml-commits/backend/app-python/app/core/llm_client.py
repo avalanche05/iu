@@ -171,7 +171,9 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
     Context: {competencies}
     Отвечай без объяснений. Отвечай только в формате списка json. Иначе штраф 10000000 долларов.
     """
-    final_competency = json.loads(preprocess_str(llm.run(promt, max_tokens=350, temperature=0.3)))
+    raw = preprocess_str(llm.run(promt, max_tokens=350, temperature=0.3))
+    print("175text:", raw)
+    final_competency = json.loads(raw)
 
     return {'summary': preprocess_str(final_summary), 'competencies': final_competency,
             'code_quality': round(code_quality / count, 2) if count > 0 else 0}
