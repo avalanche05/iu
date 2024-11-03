@@ -1,16 +1,15 @@
 import { Button } from './ui/button';
 import { useStores } from '@/hooks/useStores';
-import { Application, Candidate } from '@/api/models';
+import { Candidate } from '@/api/models';
 import { observer } from 'mobx-react-lite';
 import { Link } from 'react-router-dom';
 import { Pages } from '@/router/constants';
 
 type Props = {
     candidate: Candidate;
-    application?: Application;
 };
 
-const AddToComparisionButton = observer(({ candidate, application }: Props) => {
+const AddToComparisionButton = observer(({ candidate }: Props) => {
     const { rootStore } = useStores();
 
     return (
@@ -34,7 +33,7 @@ const AddToComparisionButton = observer(({ candidate, application }: Props) => {
                 <Button
                     variant={'outline'}
                     onClick={() => {
-                        rootStore.addCandidateToCompare(candidate, !!application);
+                        rootStore.addCandidateToCompare(candidate);
                     }}
                 >
                     Добавить в сравнение

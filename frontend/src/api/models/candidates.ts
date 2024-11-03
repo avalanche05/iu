@@ -1,22 +1,48 @@
-import { Grade, WorkSchedule } from '@/models/IApplicationsFilter';
+import { Grade } from '@/models/ICandidatesFilter';
 import { Folder } from './folders';
+import { Competency } from './competency';
+import { Interview } from './interview';
 
 export interface Candidate {
     id: number;
-    name: string;
-    city: string;
-    phone: string;
+    nickname: string;
     email: string;
-    contacts: string;
-    skills: string[];
-    experience: number;
-    position: string;
+    github_url: string;
     grade: Grade;
-    speciality: string;
-    education: string;
+    experience_years: number;
     summary: string;
-    resume_link: string;
-    work_schedule: WorkSchedule;
-    is_cold: boolean;
+    code_quality: number;
+    competencies: Competency[];
+    technical_interview_result: Interview;
     folders: Folder[];
 }
+
+export interface FetchCandidatesParams {
+    nickname?: string | null;
+    grade?: Grade | null;
+    experience?: number | null;
+    competencies?: string | null;
+    folder_id?: number | null;
+}
+
+export enum ApplicationStatus {
+    Pending = 'pending',
+    HrAccepted = 'hrAccepted',
+    HrDeclined = 'hrDeclined',
+    InterviewerAccepted = 'interviewerAccepted',
+    InterviewerDeclined = 'interviewerDeclined',
+    Offer = 'offer',
+    CandidateAccepted = 'candidateAccepted',
+    CandidateDeclined = 'candidateDeclined',
+}
+
+export const ApplicationStatusLabels: Record<ApplicationStatus, string> = {
+    [ApplicationStatus.Pending]: 'Ожидает обработки',
+    [ApplicationStatus.HrAccepted]: 'Принята рекрутером',
+    [ApplicationStatus.HrDeclined]: 'Отклонена рекрутером',
+    [ApplicationStatus.InterviewerAccepted]: 'Интервью пройдено успешно',
+    [ApplicationStatus.InterviewerDeclined]: 'Интервью не пройдено',
+    [ApplicationStatus.Offer]: 'Отправлен оффер',
+    [ApplicationStatus.CandidateAccepted]: 'Принято кандидатом',
+    [ApplicationStatus.CandidateDeclined]: 'Отклонено кандидатом',
+};

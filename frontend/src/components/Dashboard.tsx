@@ -101,7 +101,7 @@ const Navigation = () => {
         <>
             <Link to={`/${Pages.Applications}`} className='flex items-center gap-2'>
                 <LoaderButton className='flex w-full items-center gap-3 rounded-lg px-3 py-2 my-2 text-muted-foreground transition-all hover:bg-slate-100 bg-slate-50'>
-                    Отклики
+                    Профили
                 </LoaderButton>
             </Link>
 

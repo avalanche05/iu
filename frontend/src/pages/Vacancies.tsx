@@ -22,7 +22,7 @@ import { toast } from '@/components/ui/use-toast';
 import VacanciesFilter from '@/components/VacanciesFilter';
 import VacancyCard from '@/components/VacancyCard';
 import { useStores } from '@/hooks/useStores';
-import { Grade, GradeLabels, WorkSchedule, WorkScheduleLabels } from '@/models/IApplicationsFilter';
+import { Grade, GradeLabels } from '@/models/ICandidatesFilter';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
 import { Tag, TagInput } from 'emblor';
@@ -32,13 +32,9 @@ const Vacancies = observer(() => {
 
     const [isCreateVacancyDialogOpen, setIsEditOrganizationDialogOpen] = useState(false);
 
-    const [position, setPosition] = useState('');
-    const [speciality, setSpeciality] = useState('');
+    const [title, setTitle] = useState('');
     const [grade, setGrade] = useState<Grade | null>(null);
     const [description, setDescription] = useState('');
-    const [team, setTeam] = useState('');
-    const [city, setCity] = useState('');
-    const [workFormat, setWorkFormat] = useState<WorkSchedule | null>(null);
     const [tags, setTags] = useState<Tag[]>([]);
     const [activeTagIndex, setActiveTagIndex] = useState<number | null>(null);
 
@@ -57,23 +53,19 @@ const Vacancies = observer(() => {
 
         rootStore
             .createVacancy({
-                position,
-                speciality,
+                title,
                 grade: grade ?? Grade.Middle,
                 description,
-                team,
-                city,
-                work_format: workFormat ?? WorkSchedule.FullDay,
-                skills: tags.map((tag) => tag.text),
+                competencies: tags.map((tag) => ({
+                    name: tag.text,
+                    proficiency: grade === Grade.Junior ? 0.33 : grade === Grade.Middle ? 0.66 : 1,
+                })),
             })
             .then(() => {
-                setPosition('');
-                setSpeciality('');
+                setTitle('');
                 setGrade(null);
                 setDescription('');
-                setTeam('');
-                setCity('');
-                setWorkFormat(null);
+                setTags([]);
             })
             .finally(() => {
                 setIsEditOrganizationDialogOpen(false);
@@ -105,58 +97,21 @@ const Vacancies = observer(() => {
                             <DialogTitle>Создание вакансии</DialogTitle>
                         </DialogHeader>
 
-                        <form
-                            className='create-vacancy overflow-y-scroll'
-                            onSubmit={handleEditOrganizationSubmit}
-                        >
+                        <form className='create-vacancy' onSubmit={handleEditOrganizationSubmit}>
                             <div className='grid gap-4 py-4'>
                                 <div>
-                                    <Label htmlFor='city' className='text-right'>
-                                        Город
+                                    <Label htmlFor='title' className='text-right'>
+                                        Название
                                     </Label>
                                     <Input
-                                        value={city}
+                                        value={title}
                                         onChange={(e) => {
-                                            setCity(e.target.value);
+                                            setTitle(e.target.value);
                                         }}
                                         required
-                                        id='city'
-                                        name='city'
-                                        placeholder='Город'
-                                        className='col-span-3'
-                                    />
-                                </div>
-
-                                <div>
-                                    <Label htmlFor='position' className='text-right'>
-                                        Позиция
-                                    </Label>
-                                    <Input
-                                        value={position}
-                                        onChange={(e) => {
-                                            setPosition(e.target.value);
-                                        }}
-                                        required
-                                        id='position'
-                                        name='position'
-                                        placeholder='Позиция'
-                                        className='col-span-3'
-                                    />
-                                </div>
-
-                                <div>
-                                    <Label htmlFor='speciality' className='text-right'>
-                                        Специальность
-                                    </Label>
-                                    <Input
-                                        value={speciality}
-                                        onChange={(e) => {
-                                            setSpeciality(e.target.value);
-                                        }}
-                                        required
-                                        id='speciality'
-                                        name='speciality'
-                                        placeholder='Специальность'
+                                        id='title'
+                                        name='title'
+                                        placeholder='Название'
                                         className='col-span-3'
                                     />
                                 </div>
@@ -210,46 +165,6 @@ const Vacancies = observer(() => {
                                         placeholder='Описание'
                                         className='col-span-3'
                                     />
-                                </div>
-
-                                <div>
-                                    <Label htmlFor='team' className='text-right'>
-                                        Команда
-                                    </Label>
-                                    <Input
-                                        value={team}
-                                        onChange={(e) => {
-                                            setTeam(e.target.value);
-                                        }}
-                                        required
-                                        id='team'
-                                        name='team'
-                                        placeholder='Команда'
-                                        className='col-span-3'
-                                    />
-                                </div>
-
-                                <div>
-                                    <Select
-                                        onValueChange={(value) =>
-                                            setWorkFormat(value as WorkSchedule)
-                                        }
-                                    >
-                                        <SelectTrigger className='flex-1'>
-                                            <SelectValue placeholder='График работы' />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {Object.keys(WorkScheduleLabels).map((key) => (
-                                                <SelectItem key={key} value={key}>
-                                                    {
-                                                        WorkScheduleLabels[
-                                                            key as keyof typeof WorkScheduleLabels
-                                                        ]
-                                                    }
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
                                 </div>
                             </div>
 
