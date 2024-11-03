@@ -29,7 +29,7 @@ const AddCandidateToFolderButton = ({ candidateId }: Props) => {
             .catch(() => {
                 toast({
                     title: 'Ошибка',
-                    description: 'Не удалось добавить кандидата в папку',
+                    description: 'Не удалось добавить кандидата в проект',
                     variant: 'destructive',
                 });
             })
@@ -41,11 +41,11 @@ const AddCandidateToFolderButton = ({ candidateId }: Props) => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant='outline'>Добавить в папку</Button>
+                <Button variant='outline'>Добавить в проект</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Добавить папку</DialogTitle>
+                    <DialogTitle>Добавить проект</DialogTitle>
                 </DialogHeader>
                 <div className='grid gap-4 py-4'>
                     <div>
@@ -57,7 +57,7 @@ const AddCandidateToFolderButton = ({ candidateId }: Props) => {
                             defaultValue={folderId}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder='Выберите папку' />
+                                <SelectValue placeholder='Выберите проект' />
                             </SelectTrigger>
                             <SelectContent>
                                 {rootStore.folders.map((folder) => (

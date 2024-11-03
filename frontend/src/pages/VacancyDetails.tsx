@@ -12,6 +12,7 @@ import {
 } from '@/constants/colors';
 import { useStores } from '@/hooks/useStores';
 import { RadarDataset } from '@/models/RadarDataset';
+import { mapFloatYearToReadableText } from '@/utils/mapFloatYearToReadableText';
 import { StarIcon } from 'lucide-react';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
@@ -46,7 +47,7 @@ function VacancyInfo({
 
                           const skillIndex = candidateLabels?.indexOf(label);
 
-                          return skillIndex !== -1 ? candidateDataset.data[skillIndex] : 0;
+                          return skillIndex !== -1 ? candidateDataset.data[skillIndex] : 0.1;
                       }),
                   },
               ]
@@ -59,14 +60,14 @@ function VacancyInfo({
                 <CardTitle>{vacancy.title}</CardTitle>
             </CardHeader>
             <CardContent>
-                <div className='flex flex-col md:flex-row gap-6'>
-                    <div className='md:w-2/3'>
+                <div className='flex flex-col gap-6'>
+                    <div className='md:w-full'>
                         <Badge>{vacancy.grade}</Badge>
 
                         <CardDescription className='mt-2'>{vacancy.description}</CardDescription>
                     </div>
 
-                    <div className='w-full md:w-1/3 space-y-4'>
+                    <div className='w-full md:w-full space-y-4'>
                         <RadarChart labels={vacancyLabels} datasets={vacancyDatasets} />
                     </div>
                 </div>
@@ -76,18 +77,27 @@ function VacancyInfo({
 }
 
 // Candidate Card Component
-function VacancyCandidateCard({ candidate }: { candidate: Candidate }) {
+function VacancyCandidateCard({
+    candidate,
+}: {
+    candidate: Candidate & { compliance_percent: number };
+}) {
     return (
         <Card className='mb-4 cursor-pointer hover:bg-slate-100'>
             <CardHeader>
                 <CardTitle>{candidate.nickname}</CardTitle>
                 <CardDescription>{candidate.email}</CardDescription>
+                <CardDescription>
+                    Соответствие вакансии {candidate.compliance_percent.toPrecision(3)}%
+                </CardDescription>
             </CardHeader>
             <CardContent>
                 <div className='grid gap-2'>
                     <div>
                         <Badge>{candidate.grade}</Badge>
-                        <span className='ml-2'>{candidate.experience_years} лет опыта</span>
+                        <span className='ml-2'>
+                            {mapFloatYearToReadableText(candidate.experience_years)} опыта
+                        </span>
                     </div>
 
                     <p className='text-sm text-gray-600'>{candidate.summary}</p>
@@ -97,7 +107,7 @@ function VacancyCandidateCard({ candidate }: { candidate: Candidate }) {
                             <StarIcon
                                 key={index}
                                 className={`w-4 h-4 ${
-                                    index < Math.round(candidate.code_quality / 2)
+                                    index < Math.round(candidate.code_quality * 5)
                                         ? 'text-yellow-400'
                                         : 'text-gray-300'
                                 }`}
@@ -139,10 +149,6 @@ const VacancyDetails = observer(() => {
 
     return (
         <>
-            <div className='flex items-center justify-between'>
-                <h1 className='font-semibold text-lg md:text-2xl'>Вакансия</h1>
-            </div>
-
             {loading || !vacancyDetails ? (
                 <>
                     <Skeleton className='h-40' />
@@ -155,42 +161,60 @@ const VacancyDetails = observer(() => {
                 </>
             ) : (
                 <>
-                    <VacancyInfo
-                        vacancy={vacancyDetails}
-                        candidateDataset={candidateDataset}
-                        candidateLabels={candidateLabels}
-                    />
-
-                    <div className='mb-2'>
-                        <h2 className='text-2xl font-semibold mb-1'>Подходящие кандидаты</h2>
-
-                        <p>
-                            Кандидаты отранжированы по релевантновти вакансии. Выберите кандидата,
-                            чтобы сравнить его навыки с требованиями вакансии.
-                        </p>
-                    </div>
-
-                    <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-                        {vacancyDetails.candidates.map((candidate, index) => (
-                            <div
-                                key={index}
-                                onClick={() => {
-                                    setCandidateDataset({
-                                        label: candidate.nickname,
-                                        data: candidate.competencies.map(
-                                            (skill) => skill.proficiency
-                                        ),
-                                        backgroundColor: candidateAColor,
-                                        borderColor: candidateABorderColor,
-                                    });
-                                    setCandidateLabels(
-                                        candidate.competencies.map((skill) => skill.name)
-                                    );
-                                }}
-                            >
-                                <VacancyCandidateCard candidate={candidate} />
+                    <div className='flex gap-4 wrap vacancy-details'>
+                        <div className='md:w-2/3 sm:w-full'>
+                            <div className='flex items-center justify-between'>
+                                <h2 className='text-2xl font-semibold mb-1'>Вакансия</h2>
                             </div>
-                        ))}
+
+                            <VacancyInfo
+                                vacancy={vacancyDetails}
+                                candidateDataset={candidateDataset}
+                                candidateLabels={candidateLabels}
+                            />
+                        </div>
+
+                        <div className='md:w-1/3 sm:w-full overflow-y-scroll relative'>
+                            <div className='vacancy-candidates'>
+                                <div className='mb-2'>
+                                    <h2 className='text-2xl font-semibold mb-1'>
+                                        Подходящие кандидаты
+                                    </h2>
+
+                                    <p>
+                                        Кандидаты отранжированы по релевантности вакансии. Выберите
+                                        кандидата, чтобы сравнить его навыки с требованиями
+                                        вакансии.
+                                    </p>
+                                </div>
+
+                                <div className='grid gap-4 md:grid-cols-1 lg:grid-cols-1'>
+                                    {vacancyDetails.candidates.map((candidate, index) => (
+                                        <div
+                                            className='w-full'
+                                            key={index}
+                                            onClick={() => {
+                                                setCandidateDataset({
+                                                    label: candidate.nickname,
+                                                    data: candidate.competencies.map(
+                                                        (skill) => skill.proficiency
+                                                    ),
+                                                    backgroundColor: candidateAColor,
+                                                    borderColor: candidateABorderColor,
+                                                });
+                                                setCandidateLabels(
+                                                    candidate.competencies.map(
+                                                        (skill) => skill.name
+                                                    )
+                                                );
+                                            }}
+                                        >
+                                            <VacancyCandidateCard candidate={candidate} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </>
             )}

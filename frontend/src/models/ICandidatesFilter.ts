@@ -7,7 +7,7 @@ export enum Grade {
 export const GradeLabels: Record<Grade, string> = {
     [Grade.Junior]: 'Джуниор',
     [Grade.Middle]: 'Миддл',
-    [Grade.Senior]: 'Синьйор',
+    [Grade.Senior]: 'Сеньор',
 };
 
 export enum WorkSchedule {

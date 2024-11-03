@@ -55,7 +55,11 @@ const ComparisionTable = observer(() => {
                                     {
                                         label: 'Краткая информация',
                                         values: rootStore.candidatesToCompare.map(
-                                            ({ candidate }) => candidate.summary
+                                            ({ candidate }) => (
+                                                <div className='max-w-md text-left'>
+                                                    {candidate.summary}
+                                                </div>
+                                            )
                                         ),
                                     },
                                     {

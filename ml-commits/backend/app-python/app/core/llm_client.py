@@ -1,6 +1,29 @@
+import os
 import random
 import requests
 import json
+
+from pydantic import BaseModel
+from typing import List, Dict
+GIT_SERVER_URL = os.environ.get("GIT_SERVER_URL", "http://misis.tech:7001")
+
+class Competency(BaseModel):
+    name: str
+    proficiency: float
+
+
+class Commit(BaseModel):
+    summary: str
+    competencies: List[Competency]
+
+
+class Code(BaseModel):
+    summary: str
+    competencies: List[Competency]
+    code_quality: float
+    code_quality_description: str
+
+
 BATCHES_FOR_EXT_LIMIT = 1
 KEY_MATCHES_LIMIT = 5
 exts = [
@@ -24,15 +47,17 @@ exts = [
     '.hs',  # Haskell
     '.lua',  # Lua
 ]
+
 def preprocess_str(s: str):
-    return s.strip().strip('(').strip(')').strip().strip('"').strip("'").replace("\n", '').replace('\\n', '').replace('\\', '')
+    return s.strip().strip('(').strip(')').strip().strip("'").strip().strip('"').strip("'").replace("\n", '').replace('\\n', '').replace('\\', '')
 class LlmRun:
-    def __init__(self, url: str, system_promt: str="You are a helpful assistant."):
+    def __init__(self, url: str, system_promt: str = "You are a helpful assistant."):
         self.llm_url = url
         self.system_prompt = system_promt
         self.headers = {
             "Content-Type": "application/json"
         }
+
     def run(self, prompt, max_tokens=100, temperature=0.1):
         data = {
         "prompt": [prompt],
@@ -43,7 +68,19 @@ class LlmRun:
         "temperature": temperature
         }
         
-        
+
+    def run(self, prompt, max_tokens=100, temperature=0.1, schema=None):
+        data = {
+            "prompt": [prompt],
+            "apply_chat_template": True,
+            "system_prompt": self.system_prompt,
+            "max_tokens": max_tokens,
+            "n": 1,
+            "schema": schema,
+            "temperature": temperature
+        }
+
+
         response = requests.post(self.llm_url + '/generate', data=json.dumps(data), headers=self.headers)
         return response.text
 
@@ -51,18 +88,21 @@ class LlmRun:
 url = "https://vk-devinsight-case-backup.olymp.innopolis.university"
 llm = LlmRun(url=url)
 
-def get_candidate(commits: list[dict]) -> dict:
 
+def get_candidate(commits: list[dict]) -> dict:
     context = ""
     for commit in commits:
         context += f"Дата:{commit['date']}" + f"Коммит: {commit['message']}" + '\n'
 
+    schema = Commit.schema()
+    schema_json = json.dumps(schema, indent=2)
     raw = llm.run(f"""Мне нужно, используя данные коммитов из Context одного человека, сгенерировать один json со следующими полями: summary: str, competencies: name: str, proficiency: float
-    summary - это кратко какой вклад был сделан кандидатом;
+    summary - это кратко какой вклад был сделан кандидатом, его сильные и слабые стороны;
     competencies - это технологии, которые он использовал в своем проекте.
-    Context: {context}
+    Context: {context[:min(10000, len(context))]}
     Отвечай без объяснения. Мне нужен только json, никаких лишних символов. Штраф - 10000000000000$.
-    """, max_tokens=500, temperature=0.5)
+    """, max_tokens=500, temperature=0.5, schema=schema_json)
+    print("text:", raw)
     t = json.loads(raw)
     return json.loads(t)
 
@@ -81,7 +121,7 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
             batches_count_for_ext = 0
             random.shuffle(data[key])
             for i, file_path in enumerate(data[key]):
-                url = 'http://misis.tech:8001/code'
+                url = GIT_SERVER_URL+ '/code/'
                 params = {
                     'repo_url': repo_url,
                     'contributor': contributor,
@@ -89,7 +129,6 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
                 }
                 
                 response = requests.get(url, params=params)
-                
                 # Check if the request was successful
                 if response.status_code == 200:
                     # Parse the JSON response
@@ -99,20 +138,23 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
                             files += str_code + '\n'
                 else:
                     print(f'Failed to retrieve data: {response.status_code}')
-            # files += '\n'
-                if (len(files) > 10000) or (i == len(data[key])-1) or i >= 50:
+                # files += '\n'
+                if (len(files) > 10000) or (i == len(data[key]) - 1) or i >= 50:
                     batches_count_for_ext += 1
-                    prompt = f"""Дай краткий анализ по написанному коду на языке {key}. Мне нужны поля summary - это кратко какой вклад был сделан кандидатом;
+                    prompt = f"""Дай краткий анализ по написанному коду на языке {key}. Мне нужны поля summary - это кратко какой вклад был сделан кандидатом, его сильные и слабые стороны;
                     competencies - это технологии, которые он использовал в своем проекте в виде name, proficiency - от 0 до 1;
-                    code_quality - дай оценку от 0 до 1 качество написанного кода.
+                    code_quality - дай оценку от 0 до 1 качество написанного кода;
+                    code_quality_description - дай пояснение к своему выбору code_quality для этого кандита.
                     Context: {files}.
                     Отвечай без объяснений. Дай ответ в формате json. Без лишних символов. Иначе штраф 1000000 долларов.
                     """
-                    run = llm.run(prompt, max_tokens=500, temperature=0.3)
+                    schema = Code.schema()
+                    schema_json = json.dumps(schema, indent=2)
+                    run = llm.run(prompt, max_tokens=500, temperature=0.3, schema=schema_json)
                     runs.append(run)
                     files = ''
                     break
-                
+
     sumarries = ""
     competencies = ""
     code_quality = 0
@@ -129,7 +171,7 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
             except Exception as e:
                 print(e)
     print("smrs", sumarries)
-    promt = f"""Дай харакетристику компетенции что умеет кандидат, используя данные о нем в Context.
+    promt = f"""Дай харакетристику компетенции что умеет кандидат, его сильные и слабые стороны используя данные о нем в Context.
     Context: {sumarries}
     Отвечай без объяснений. Пиши предложения, разделяй предложения точкой. Иначе штраф 10000000 долларов.
     """
@@ -141,4 +183,5 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
     """
     final_competency = json.loads(preprocess_str(llm.run(promt, max_tokens=350, temperature=0.3)))
 
-    return {'summary': preprocess_str(final_summary), 'competencies': final_competency, 'code_quality': round(code_quality/count, 2) if count > 0 else 0}
+    return {'summary': preprocess_str(final_summary), 'competencies': final_competency,
+            'code_quality': round(code_quality / count, 2) if count > 0 else 0}

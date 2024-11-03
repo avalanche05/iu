@@ -94,4 +94,14 @@ header {
 
 .create-vacancy {
     max-height: calc(100vh - 200px);
+    overflow-y: scroll;
+}
+
+.vacancy-details {
+    min-height: calc(100vh - 140px);
+}
+
+.vacancy-candidates {
+    position: absolute;
+    right: 0;
 }

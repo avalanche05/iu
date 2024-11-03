@@ -21,3 +21,4 @@ def get_code(repo_url: str, contributor: str) -> dict:
 
 @router.get("/profile")
 def get_profile(profile_nickname: str) -> dict:
+    return result

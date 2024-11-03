@@ -11,9 +11,19 @@ services:
     restart: always
     ports:
       - 8181:8000
+  ml-server:
+    build:
+      context: ml-commits/backend/app-python/
+    restart: always
+    environment:
+      - GIT_SERVER_URL=http://misis.tech:9001
+    ports:
+      - 9002:8000
   git-server:
     build:
       context: backend/app-git/
+    environment:
+      - REPO_DIR=/app/repos
     restart: always
     volumes:
       - /home/ilinivan/repos:/app/repos
