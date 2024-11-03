@@ -40,7 +40,7 @@ const Comparision = observer(() => {
                             <SelectContent>
                                 {rootStore.vacancies.map((vacancy) => (
                                     <SelectItem key={vacancy.id} value={vacancy.id.toString()}>
-                                        {vacancy.position}: {vacancy.speciality}
+                                        {vacancy.title}
                                     </SelectItem>
                                 ))}
                             </SelectContent>

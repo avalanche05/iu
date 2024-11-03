@@ -33,7 +33,7 @@ export function Dashboard({ children }: DashboardProps) {
                         <nav className='hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6'>
                             <Link to='/' className='flex items-center gap-2 font-semibold'>
                                 <Package2 className='h-6 w-6' />
-                                <span className=''>HR Monitor</span>
+                                <span className=''>DevInsight</span>
                             </Link>
 
                             <Navigation />
@@ -56,7 +56,7 @@ export function Dashboard({ children }: DashboardProps) {
                                         className='flex items-center gap-2 text-lg font-semibold'
                                     >
                                         <Package2 className='h-6 w-6' />
-                                        HR Monitor
+                                        DevInsight
                                     </Link>
 
                                     <Navigation />
@@ -114,12 +114,6 @@ const Navigation = () => {
             <Link to={`/${Pages.Comparision}`} className='flex items-center gap-2'>
                 <LoaderButton className='flex w-full items-center gap-3 rounded-lg px-3 py-2 my-2 text-muted-foreground transition-all hover:bg-slate-100 bg-slate-50'>
                     Сравнение
-                </LoaderButton>
-            </Link>
-
-            <Link to={`/${Pages.Uploader}`} className='flex items-center gap-2'>
-                <LoaderButton className='flex w-full items-center gap-3 rounded-lg px-3 py-2 my-2 text-muted-foreground transition-all hover:bg-slate-100 bg-slate-50'>
-                    Загрузка резюме
                 </LoaderButton>
             </Link>
 

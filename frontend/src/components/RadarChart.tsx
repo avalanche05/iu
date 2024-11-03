@@ -10,6 +10,7 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
+import { Badge } from './ui/badge';
 
 // Регистрация модулей, необходимых для радарного графика
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
@@ -48,7 +49,29 @@ const RadarChart: React.FC<RadarChartProps> = ({ labels, datasets }) => {
         },
     };
 
-    return <Radar data={data} options={options} />;
+    return (
+        <>
+            {labels.length > 2 ? (
+                <Radar data={data} options={options} />
+            ) : (
+                <>
+                    <div className='flex flex-col'>
+                        <div>
+                            {labels.map((label) => (
+                                <Badge key={label} variant={'outline'}>
+                                    {label}
+                                </Badge>
+                            ))}
+                        </div>
+
+                        <div className='mt-2 text-xs text-slate-700'>
+                            Недостаточно компетенций для построения диаграммы
+                        </div>
+                    </div>
+                </>
+            )}
+        </>
+    );
 };
 
 export default RadarChart;

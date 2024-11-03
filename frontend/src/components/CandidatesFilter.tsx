@@ -41,13 +41,17 @@ const CandidatesFilter = observer(() => {
             nickname: formData.nickname || null,
             grade: (formData.grade as Grade) || null,
             experience: +formData.experience || null,
-            competencies: tags.map((tag) => tag.text),
+            competencies: tags.length ? tags.map((tag) => tag.text) : null,
         });
     };
 
     return (
         <div className='w-full mx-auto'>
             <Folders />
+
+            <div>
+                <h2 className='text-2xl font-bold mb-2'>Поиск по кандидатам</h2>
+            </div>
 
             <div className='flex flex-col space-y-4 mb-4'>
                 <form onSubmit={(e) => handleSubmit(e)} className='flex flex-col space-y-4 mb-4'>
