@@ -2,13 +2,14 @@ import json
 from sqlalchemy.orm import Session
 
 from app import schemas
-from app.models import Application, Candidate, Folder, Vacancy
+from app.models import Interview
 
 
-def create(session: Session, interview: schemas.InterviewCreate, user: schemas.User) -> Folder:
-    db_interview = Folder(
+def create(session: Session, interview: schemas.InterviewCreate, user: schemas.User) -> Interview:
+    db_interview = Interview(
         summary=interview.summary,
-        competencies=json.dumps([competence.dict() for competence in interview.competencies])
+        competencies=json.dumps([competence.dict() for competence in interview.competencies]),
+        candidate_id=interview.candidate_id,
     )
     session.add(db_interview)
     session.commit()
