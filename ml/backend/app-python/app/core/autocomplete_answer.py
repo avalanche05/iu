@@ -21,6 +21,6 @@ def main(data):
     return text
 
 
-if __name__ == "__main__":
-    result = main(data={"name": "Иван Иванов", "position": "Middle python develover", "target_action": "candidateAccepted"})
-    print(result)
+# if __name__ == "__main__":
+#     result = main(data={"name": "Иван Иванов", "position": "Middle python develover", "target_action": "candidateAccepted"})
+#     print(result)

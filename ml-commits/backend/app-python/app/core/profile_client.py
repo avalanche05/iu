@@ -4,7 +4,7 @@ from datetime import datetime
 import requests
 from pprint import pprint
 
-github_token = "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"
+github_token = os.environ.get("github_token")
 
 
 class ProfileParser:

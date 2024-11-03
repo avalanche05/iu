@@ -16,8 +16,6 @@ async def main():
         len_d = len(d)
         for i, t in enumerate(d):
             try:
-                if i < 214:
-                    continue
                 user_login = t["github_profile"].split("/")[-1]
                 print(i, user_login)
                 full_info = await profile_client.get_full_info(user_login)
