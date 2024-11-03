@@ -15,6 +15,15 @@ export interface Candidate {
     competencies: Competency[];
     technical_interview_result: Interview;
     folders: Folder[];
+    metrics: {
+        repos_count: number;
+        created_at: string;
+        followers_count: number;
+        forks_count: number;
+        avg_comments_count: number;
+        avg_prs_close_time: number;
+        avg_commits_per_pr_count: number;
+    };
 }
 
 export interface FetchCandidatesParams {

@@ -102,7 +102,7 @@ const CandidateCard = ({ candidate }: Props) => {
 
                                 <div className='grid md:grid-cols-3 gap-4'>
                                     <div>
-                                        <p className='text-sm font-medium'>Папки:</p>
+                                        <p className='text-sm font-medium'>Проекты:</p>
                                         <p>
                                             {candidate.folders
                                                 .map((folder) => folder.name)
@@ -122,6 +122,61 @@ const CandidateCard = ({ candidate }: Props) => {
                                     <p className='text-sm font-medium'>Навыки:</p>
                                     <div className='flex flex-wrap gap-2 mt-1'>
                                         <RadarChart labels={labels} datasets={datasets} />
+                                    </div>
+                                </div>
+
+                                <div className='grid md:grid-cols-3 gap-4'>
+                                    <div>
+                                        <p className='text-sm font-medium'>
+                                            Количество репозиториев:
+                                        </p>
+                                        <p>{candidate.metrics.repos_count}</p>
+                                    </div>
+
+                                    <div>
+                                        <p className='text-sm font-medium'>Количество форков:</p>
+                                        <p>{candidate.metrics.forks_count}</p>
+                                    </div>
+
+                                    <div>
+                                        <p className='text-sm font-medium'>
+                                            Количество подписчиков:
+                                        </p>
+                                        <p>{candidate.metrics.followers_count}</p>
+                                    </div>
+                                </div>
+
+                                <div className='grid md:grid-cols-3 gap-4'>
+                                    <div>
+                                        <p className='text-sm font-medium'>
+                                            Дата создания профиля:
+                                        </p>
+                                        <p>
+                                            {new Date(candidate.metrics.created_at).toUTCString()}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className='text-sm font-medium'>
+                                            Среднее количество комментариев к PR:
+                                        </p>
+                                        <p>{candidate.metrics.avg_comments_count}</p>
+                                    </div>
+                                </div>
+
+                                <div className='grid md:grid-cols-3 gap-4'>
+                                    <div>
+                                        <p className='text-sm font-medium'>
+                                            Среднее время закрытия PR:
+                                        </p>
+                                        <p>{candidate.metrics.avg_prs_close_time}</p>
+                                    </div>
+
+                                    <div>
+                                        <p className='text-sm font-medium'>
+                                            Среднее количество коммитов на PR:
+                                        </p>
+                                        <p>{candidate.metrics.avg_commits_per_pr_count}</p>
                                     </div>
                                 </div>
 
