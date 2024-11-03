@@ -12,9 +12,9 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 from app import crud, serializers, utils
 from app.api.deps import S3ClientDep, SessionDep, StorageDep, CurrentUser
 from app.crud import auth
-from app.models.application import Application
+from app.models.user import User
 from app.models.candidate import Candidate
-from app.schemas import FileResult, ResumeProcessSession, VoiceProcessSession
+from app.schemas import FileResult, ResumeProcessSession, VoiceProcessSession, VacancyCreate
 from app.serializers.user import get_user
 
 router = APIRouter()
@@ -28,6 +28,7 @@ class ResumeProcessorThread(threading.Thread):
             db_session,
             s3_client,
             vacancy_id: int | None = None,
+            user: User | None = None,
     ):
         threading.Thread.__init__(self)
         self.session_id = session_id
@@ -39,6 +40,7 @@ class ResumeProcessorThread(threading.Thread):
         self.all_files = copy.copy(files)
         self._s3_client = s3_client
         self.vacancy_id = vacancy_id
+        self.db_user = user
 
         for file_key in files:
             self._files_queue.put(file_key)
@@ -47,7 +49,7 @@ class ResumeProcessorThread(threading.Thread):
         while not self._files_queue.empty():
             file_key = self._files_queue.get()
             response = requests.post(
-                f"{os.environ.get('ML_RESUME_HOST', 'http://localhost')}:5000/resume/process",
+                f"{os.environ.get('ML_RESUME_HOST', 'http://localhost:5000')}/resume/process",
                 json={
                     "file_key": file_key,
                 },
@@ -60,7 +62,14 @@ class ResumeProcessorThread(threading.Thread):
                     "reason": response.text,
                 }
                 continue
-            candidate = response.json()["candidate"]
+            vacancy_raw = response.json()
+            vacancy = VacancyCreate(
+                title=vacancy_raw["title"],
+                grade=vacancy_raw["grade"],
+                description=vacancy_raw["description"],
+                competencies=vacancy_raw["competencies"],
+            )
+            
             with self.lock:
 
                 resume_link = self._s3_client.generate_presigned_url(
@@ -69,28 +78,18 @@ class ResumeProcessorThread(threading.Thread):
                     ExpiresIn=7 * 86400,
                 )
 
-                db_candidate = crud.candidate.create(
+                db_vacancy = crud.vacancy.create(
                     self._db_session,
-                    candidate,
-                    resume_link=resume_link,
-                    is_cold=bool(self.vacancy_id is None),
+                    vacancy,
+                    self.db_user,
                 )
 
-                if self.vacancy_id:
-                    crud.application.create_or_update(
-                        self._db_session,
-                        Application(
-                            vacancy_id=self.vacancy_id,
-                            candidate_id=db_candidate.id,
-                            status="pending",
-                        ),
-                    )
 
             with self.lock:
                 self._processed_files[file_key] = {
                     "file_name": file_name,
                     "is_success": True,
-                    "candidate": serializers.get_candidate(db_candidate),
+                    "vacancy": serializers.get_vacancy(db_vacancy),
                 }
 
 
@@ -127,6 +126,7 @@ async def upload_resume(
         db_session=db_session,
         s3_client=s3_client,
         vacancy_id=vacancy_id,
+        user=db_user,
     )
 
     resume_processor.start()
@@ -171,7 +171,7 @@ async def get_resume_process_session(storage: StorageDep, db_user: CurrentUser, 
                 success.append(
                     FileResult(
                         file_name=file_data["file_name"],
-                        candidate=file_data["candidate"],
+                        vacancy=file_data["vacancy"],
                     )
                 )
             else:
