@@ -10,4 +10,6 @@ RUN pip install -r requirements.txt
 
 COPY ./app/ /app/app
 
+RUN git config --global --add safe.directory '*'
+
 CMD ["fastapi", "run", "--workers", "4", "--host", "0.0.0.0", "--port", "8000", "app/main.py"]
