@@ -35,7 +35,7 @@ async def generate_approve_feedback(
     }
 
     response = requests.post(
-        f"{os.environ.get('ML_RESUME_HOST', 'http://localhost')}:5000/feedback/generate",
+        f"{os.environ.get('ML_RESUME_HOST', 'http://localhost:5000')}/feedback/generate",
         json={
             "action": "approve",
             "candidate": candidate_data,
@@ -63,7 +63,7 @@ async def generate_approve_feedback(
     }
 
     response = requests.post(
-        f"{os.environ.get('ML_RESUME_HOST', 'http://localhost')}:5000/feedback/generate",
+        f"{os.environ.get('ML_RESUME_HOST', 'http://localhost:5000')}/feedback/generate",
         json={
             "action": "reject",
             "candidate": candidate_data,
