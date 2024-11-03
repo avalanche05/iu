@@ -28,5 +28,7 @@ export interface FetchVacancyDetailsParams {
 }
 
 export interface IVacancyDetails extends Vacancy {
-    candidates: Candidate[];
+    candidates: (Candidate & {
+        compliance_percent: number;
+    })[];
 }

@@ -96,8 +96,11 @@ header {
     max-height: calc(100vh - 200px);
 }
 
+.vacancy-details {
+    min-height: calc(100vh - 140px);
+}
+
 .vacancy-candidates {
-    // min-height: calc(100vh - 140px);
     position: absolute;
     right: 0;
 }

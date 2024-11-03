@@ -77,12 +77,19 @@ function VacancyInfo({
 }
 
 // Candidate Card Component
-function VacancyCandidateCard({ candidate }: { candidate: Candidate }) {
+function VacancyCandidateCard({
+    candidate,
+}: {
+    candidate: Candidate & { compliance_percent: number };
+}) {
     return (
         <Card className='mb-4 cursor-pointer hover:bg-slate-100'>
             <CardHeader>
                 <CardTitle>{candidate.nickname}</CardTitle>
                 <CardDescription>{candidate.email}</CardDescription>
+                <CardDescription>
+                    Соответствие вакансии {candidate.compliance_percent.toPrecision(3)}%
+                </CardDescription>
             </CardHeader>
             <CardContent>
                 <div className='grid gap-2'>
@@ -100,7 +107,7 @@ function VacancyCandidateCard({ candidate }: { candidate: Candidate }) {
                             <StarIcon
                                 key={index}
                                 className={`w-4 h-4 ${
-                                    index < Math.round(candidate.code_quality / 2)
+                                    index < Math.round(candidate.code_quality * 5)
                                         ? 'text-yellow-400'
                                         : 'text-gray-300'
                                 }`}
@@ -154,7 +161,7 @@ const VacancyDetails = observer(() => {
                 </>
             ) : (
                 <>
-                    <div className='flex gap-4 wrap'>
+                    <div className='flex gap-4 wrap vacancy-details'>
                         <div className='md:w-2/3 sm:w-full'>
                             <div className='flex items-center justify-between'>
                                 <h2 className='text-2xl font-semibold mb-1'>Вакансия</h2>
