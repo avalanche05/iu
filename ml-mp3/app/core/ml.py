@@ -123,7 +123,7 @@ speech_model = InterviewToText()
 
 
 def get_mp3_analyze(mp3_path: str, position: str, compitencies: list) -> list[dict]:
-    result = preprocess_str(speech_model.run(mp3_path, {"position": position}, competencies_candidate=compitencies))
+    result = speech_model.run(mp3_path, {"position": position}, competencies_candidate=compitencies)
     return {
         "summary": result["summary"],
         "competencies": result["competencies"],
