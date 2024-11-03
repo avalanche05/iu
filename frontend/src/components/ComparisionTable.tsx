@@ -1,7 +1,8 @@
 import { useStores } from '@/hooks/useStores';
 import { mapFloatYearToReadableText } from '@/utils/mapFloatYearToReadableText';
-import { Check, X } from 'lucide-react';
 import { observer } from 'mobx-react-lite';
+import { Badge } from './ui/badge';
+import RadarChart from './RadarChart';
 
 const ComparisionTable = observer(() => {
     const { rootStore } = useStores();
@@ -17,11 +18,11 @@ const ComparisionTable = observer(() => {
                                 <tr className='bg-gray-100'>
                                     <th className='p-2 text-left'></th>
                                     {rootStore.candidatesToCompare
-                                        .map(({ candidate }) => candidate.name)
+                                        .map(({ candidate }) => candidate.nickname)
                                         .map((name, index) => (
                                             <th key={index} className='p-2'>
                                                 <div className='flex flex-col items-center mb-2'>
-                                                    <span className='text-purple-600'>{name}</span>
+                                                    <span className='text-blue-600'>{name}</span>
                                                 </div>
                                             </th>
                                         ))}
@@ -30,32 +31,25 @@ const ComparisionTable = observer(() => {
                             <tbody>
                                 {[
                                     {
-                                        label: 'Специальность',
+                                        label: 'Грейд',
                                         values: rootStore.candidatesToCompare.map(
-                                            ({ candidate }) => candidate.speciality
+                                            ({ candidate }) => <Badge>{candidate.grade}</Badge>
                                         ),
                                     },
                                     {
                                         label: 'Стаж работы',
                                         values: rootStore.candidatesToCompare.map(({ candidate }) =>
-                                            mapFloatYearToReadableText(candidate.experience)
-                                        ),
-                                    },
-                                    {
-                                        label: 'Наличие отклика',
-                                        values: rootStore.candidatesToCompare.map(
-                                            ({ hasApplication }) =>
-                                                hasApplication ? (
-                                                    <Check className='text-green-500 mx-auto' />
-                                                ) : (
-                                                    <X className='text-red-500 mx-auto' />
-                                                )
+                                            mapFloatYearToReadableText(candidate.experience_years)
                                         ),
                                     },
                                     {
                                         label: 'Ключевые навыки',
                                         values: rootStore.candidatesToCompare.map(({ candidate }) =>
-                                            candidate.skills.join(', ')
+                                            candidate.competencies.map((competency, index) => (
+                                                <Badge key={index} variant='secondary'>
+                                                    {competency.name}
+                                                </Badge>
+                                            ))
                                         ),
                                     },
                                     {
@@ -65,29 +59,38 @@ const ComparisionTable = observer(() => {
                                         ),
                                     },
                                     {
-                                        label: 'Образование',
-                                        values: rootStore.candidatesToCompare.map(
-                                            ({ candidate }) => candidate.education
-                                        ),
-                                    },
-                                    {
-                                        label: 'График',
-                                        values: rootStore.candidatesToCompare.map(
-                                            ({ candidate }) => candidate.work_schedule
-                                        ),
-                                    },
-                                    {
-                                        label: 'Резюме',
+                                        label: 'GitHub',
                                         values: rootStore.candidatesToCompare.map(
                                             ({ candidate }) => (
                                                 <a
-                                                    href={candidate.resume_link}
+                                                    href={candidate.github_url}
                                                     target='_blank'
                                                     rel='noopener noreferrer'
                                                     className='text-blue-500 hover:underline'
                                                 >
                                                     Просмотреть резюме
                                                 </a>
+                                            )
+                                        ),
+                                    },
+                                    {
+                                        label: 'Диаграмма компетенций',
+                                        values: rootStore.candidatesToCompare.map(
+                                            ({ candidate }) => (
+                                                <RadarChart
+                                                    labels={candidate.competencies.map(
+                                                        (competency) => competency.name
+                                                    )}
+                                                    datasets={[
+                                                        {
+                                                            label: candidate.nickname,
+                                                            data: candidate.competencies.map(
+                                                                (competency) =>
+                                                                    competency.proficiency
+                                                            ),
+                                                        },
+                                                    ]}
+                                                />
                                             )
                                         ),
                                     },
@@ -109,10 +112,7 @@ const ComparisionTable = observer(() => {
                     </div>
                 </>
             ) : (
-                <p>
-                    Добавьте кандидатов для сравнения на странице откликов или на странице с
-                    кандидатами
-                </p>
+                <p>Добавьте кандидатов для сравнения на странице с профилями</p>
             )}
         </>
     );

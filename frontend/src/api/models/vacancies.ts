@@ -1,37 +1,32 @@
-import { Grade, WorkSchedule } from '@/models/IApplicationsFilter';
+import { Grade } from '@/models/ICandidatesFilter';
+import { Competency } from './competency';
+import { Candidate } from './candidates';
 
 export interface Vacancy {
     id: number;
-    position: string;
-    grade: Grade;
-    speciality: string;
+    title: string;
     description: string;
-    team: string;
-    city: string;
-    skills: string[];
-    work_format: WorkSchedule;
-    createdAt: string;
-}
-
-export interface FetchVacancyColdCandidatesParams {
-    vacancyId: number;
+    grade: Grade;
+    competencies: Competency[];
 }
 
 export interface CreateVacancyParams {
-    position: string;
-    grade: Grade;
-    speciality: string;
+    title: string;
     description: string;
-    team: string;
-    city: string;
-    work_format: WorkSchedule;
-    skills: string[];
+    grade: Grade;
+    competencies: Competency[];
 }
 
 export interface FetchVacancyParams {
-    position?: string | null;
+    title?: string | null;
     grade?: Grade | null;
-    speciality?: string | null;
-    city?: string | null;
-    work_format?: WorkSchedule | null;
+    competencies?: string | null;
+}
+
+export interface FetchVacancyDetailsParams {
+    vacancyId: number;
+}
+
+export interface IVacancyDetails extends Vacancy {
+    candidates: Candidate[];
 }

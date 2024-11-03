@@ -1,30 +1,23 @@
-import ApplicationsApiService from '@/api/ApplicationsApiService';
+import CandidatesApiService from '@/api/CandidatesApiService';
 import FoldersApiService from '@/api/FoldersApiService';
 import {
-    Application,
-    ApplicationStatus,
     Candidate,
     CreateVacancyParams,
+    FetchVacancyDetailsParams,
     FetchVacancyParams,
     Folder,
     Vacancy,
 } from '@/api/models';
 import VacanciesApiService from '@/api/VacanciesApiService';
 import { CandidateToCompare } from '@/models/CandidateToCompare';
-import { defaultApplicationsFilter, IApplicationsFilter } from '@/models/IApplicationsFilter';
+import { defaultCandidatesFilter, ICandidatesFilter } from '@/models/ICandidatesFilter';
 import { defauldVacanciesFilter, IVacanciesFilter } from '@/models/IVacanciesFilter';
 import { makeAutoObservable } from 'mobx';
 
 export class RootStore {
-    applications: Application[] = [];
-    isApplicationsLoading = false;
-    applicationsFilter: IApplicationsFilter = defaultApplicationsFilter;
-    filteredApplications: Application[] = [];
-    useRanking: boolean = false;
-
-    vacancyColdCandidates: Candidate[] = [];
-    isVacancyColdCandidatesLoading = false;
-    filteredVacancyColdCandidates: Candidate[] = [];
+    candidates: Candidate[] = [];
+    isCandidatesLoading = false;
+    candidatesFilter: ICandidatesFilter = defaultCandidatesFilter;
 
     folders: Folder[] = [];
     isFoldersLoading = false;
@@ -40,12 +33,10 @@ export class RootStore {
         makeAutoObservable(this);
     }
 
-    setApplicationFilter(filter: IApplicationsFilter) {
-        this.applicationsFilter = filter;
+    setCandidatesFilter(filter: ICandidatesFilter) {
+        this.candidatesFilter = filter;
 
-        this.filterApplications();
-
-        this.filterColdCandidates();
+        this.fetchCandidates();
     }
 
     setVacanciesFilter(filter: IVacanciesFilter) {
@@ -54,162 +45,18 @@ export class RootStore {
         this.fetchVacancies(filter);
     }
 
-    setUseRanking(value: boolean) {
-        this.useRanking = value;
-    }
-
-    async filterApplications() {
-        this.filteredApplications = this.applications;
-
-        if (this.applicationsFilter.vacancyId && this.useRanking) {
-            await this.fetchApplications(this.applicationsFilter.vacancyId, this.useRanking);
-        } else {
-            await this.fetchApplications();
-        }
-
-        if (this.applicationsFilter.name) {
-            this.filterApplicationsByCandidateProperty('name', 'name');
-        }
-
-        if (this.applicationsFilter.city) {
-            this.filterApplicationsByCandidateProperty('city', 'city');
-        }
-
-        if (this.applicationsFilter.position) {
-            this.filterApplicationsByCandidateProperty('position', 'position');
-        }
-
-        if (this.applicationsFilter.speciality) {
-            this.filterApplicationsByCandidateProperty('speciality', 'speciality');
-        }
-
-        if (this.applicationsFilter.grade) {
-            this.filterApplicationsByCandidateProperty('grade', 'grade');
-        }
-
-        if (this.applicationsFilter.experience) {
-            this.filterApplicationsByCandidateProperty('experience', 'experience');
-        }
-
-        if (this.applicationsFilter.workSchedule) {
-            this.filterApplicationsByCandidateProperty('work_schedule', 'workSchedule');
-        }
-
-        if (this.applicationsFilter.applicationStatus) {
-            this.filterApplicationsByApplicationProperty('status', 'applicationStatus');
-        }
-
-        if (this.applicationsFilter.vacancyId) {
-            this.filterApplicationsByVacancy(this.applicationsFilter.vacancyId);
-        }
-
-        if (this.activeFolderId) {
-            this.filterApplicationsByFolder(this.activeFolderId);
-        }
-    }
-
-    filterColdCandidates() {
-        this.filteredVacancyColdCandidates = this.vacancyColdCandidates;
-
-        if (this.applicationsFilter.name) {
-            this.filterCandidatesByProperty('name', 'name');
-        }
-
-        if (this.applicationsFilter.city) {
-            this.filterCandidatesByProperty('city', 'city');
-        }
-
-        if (this.applicationsFilter.position) {
-            this.filterCandidatesByProperty('position', 'position');
-        }
-
-        if (this.applicationsFilter.speciality) {
-            this.filterCandidatesByProperty('speciality', 'speciality');
-        }
-
-        if (this.applicationsFilter.grade) {
-            this.filterCandidatesByProperty('grade', 'grade');
-        }
-
-        if (this.applicationsFilter.experience) {
-            this.filterCandidatesByProperty('experience', 'experience');
-        }
-
-        if (this.applicationsFilter.workSchedule) {
-            this.filterCandidatesByProperty('work_schedule', 'workSchedule');
-        }
-    }
-
-    filterApplicationsByCandidateProperty(
-        propertyName: keyof Candidate,
-        filterName: keyof IApplicationsFilter
-    ) {
-        this.filteredApplications = this.filteredApplications.filter((application) => {
-            if (application.candidate[propertyName] === null) {
-                return false;
-            }
-
-            return application.candidate[propertyName]
-                .toString()
-                .toLowerCase()
-                .includes(this.applicationsFilter[filterName]!.toString().toLowerCase());
-        });
-    }
-
-    filterApplicationsByApplicationProperty(
-        propertyName: keyof Application,
-        filterName: keyof IApplicationsFilter
-    ) {
-        this.filteredApplications = this.filteredApplications.filter((application) => {
-            return application[propertyName]
-                .toString()
-                .toLowerCase()
-                .includes(this.applicationsFilter[filterName]!.toString().toLowerCase());
-        });
-    }
-
-    filterApplicationsByFolder(folderId: number) {
-        this.filteredApplications = this.filteredApplications.filter((application) => {
-            return application.candidate.folders.some((folder) => folder.id === folderId);
-        });
-    }
-
-    filterApplicationsByVacancy(vacancyId: number) {
-        this.filteredApplications = this.filteredApplications.filter(
-            (application) => application.vacancy.id === vacancyId
-        );
-    }
-
-    filterCandidatesByProperty(
-        propertyName: keyof Candidate,
-        filterName: keyof IApplicationsFilter
-    ) {
-        this.filteredVacancyColdCandidates = this.filteredVacancyColdCandidates.filter(
-            (candidate) => {
-                if (candidate[propertyName] === null) {
-                    return false;
-                }
-
-                return candidate[propertyName]
-                    .toString()
-                    .toLowerCase()
-                    .includes(this.applicationsFilter[filterName]!.toString().toLowerCase());
-            }
-        );
-    }
-
     setActiveFolderId(folderId: number | null) {
         this.activeFolderId = folderId;
 
-        this.filterApplications();
+        this.fetchCandidates();
     }
 
-    addCandidateToCompare(candidate: Candidate, hasApplication: boolean) {
+    addCandidateToCompare(candidate: Candidate) {
         if (this.candidatesToCompare.length >= 3) {
             this.candidatesToCompare.shift();
         }
 
-        this.candidatesToCompare.push({ id: candidate.id, candidate, hasApplication });
+        this.candidatesToCompare.push({ id: candidate.id, candidate });
     }
 
     removeCandidateToCompare(candidateId: number) {
@@ -218,34 +65,23 @@ export class RootStore {
         );
     }
 
-    async fetchApplications(vacancyId?: number, is_ranked?: boolean) {
-        this.isApplicationsLoading = true;
+    async fetchCandidates() {
+        this.isCandidatesLoading = true;
 
-        return ApplicationsApiService.fetchApplications({ vacancyId, is_ranked })
-            .then((applications) => {
-                this.applications = applications;
-                this.filteredApplications = applications;
-
-                return applications;
-            })
-            .finally(() => {
-                this.isApplicationsLoading = false;
-            });
-    }
-
-    async fetchVacancyColdCandidates(vacancyId: number) {
-        this.isVacancyColdCandidatesLoading = true;
-
-        return VacanciesApiService.fetchVacancyColdCandidates({ vacancyId })
+        return CandidatesApiService.fetchCandidate({
+            competencies: this.candidatesFilter.competencies?.join(','),
+            folder_id: this.activeFolderId ?? undefined,
+            grade: this.candidatesFilter.grade ?? undefined,
+            nickname: this.candidatesFilter.nickname ?? undefined,
+            experience: this.candidatesFilter.experience ?? undefined,
+        })
             .then((candidates) => {
-                this.vacancyColdCandidates = candidates;
-
-                this.filterColdCandidates();
+                this.candidates = candidates;
 
                 return candidates;
             })
             .finally(() => {
-                this.isVacancyColdCandidatesLoading = false;
+                this.isCandidatesLoading = false;
             });
     }
 
@@ -283,14 +119,6 @@ export class RootStore {
         );
     }
 
-    async changeApplicationStatus(applicationId: number, status: ApplicationStatus) {
-        return ApplicationsApiService.changeApplicationStatus({ applicationId, status }).then(
-            () => {
-                this.fetchApplications();
-            }
-        );
-    }
-
     async createVacancy(params: CreateVacancyParams) {
         return VacanciesApiService.createVacancy(params).then(() => {
             this.fetchVacancies({});
@@ -311,12 +139,7 @@ export class RootStore {
             });
     }
 
-    async createApplication(candidateId: number, vacancyId: number) {
-        return ApplicationsApiService.createApplicatioin({
-            candidate_id: candidateId,
-            vacancy_id: vacancyId,
-        }).then(() => {
-            this.fetchApplications();
-        });
+    async fetchVacancyDetails({ vacancyId }: FetchVacancyDetailsParams) {
+        return VacanciesApiService.fetchVacancyDetails({ vacancyId });
     }
 }

@@ -11,6 +11,14 @@ services:
     restart: always
     ports:
       - 8181:8000
+  git-server:
+    build:
+      context: backend/app-git/
+    restart: always
+    volumes:
+      - /home/ilinivan/repos:/app/repos
+    ports:
+      - 9001:8000
   ml-resume:
     build:
       context: ml/backend/app-python/
@@ -25,7 +33,6 @@ services:
     build:
         context: ./frontend
         dockerfile: Dockerfile
-    container_name: frontend
     restart: always
     ports:
         - "3000:3000"
