@@ -3,7 +3,7 @@ import { Button } from '../ui/button';
 import { useState } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
-import { ChevronsUpDown } from 'lucide-react';
+import { ChevronsUpDown, StarIcon } from 'lucide-react';
 import AddCandidateToFolderButton from '../AddCandidateToFolderButton';
 import AddToComparisionButton from '../AddToComparisionButton';
 import GenerateFeedbackBlock from '../GenerateFeedbackBlock';
@@ -35,7 +35,7 @@ const CandidateCard = ({ candidate }: Props) => {
                     <div className='cursor-pointer' onClick={() => setIsOpen(!isOpen)}>
                         <div className='flex items-center justify-between'>
                             <div className='flex items-center'>
-                                <h2 className='text-2xl font-bold'>Github: {candidate.nickname}</h2>
+                                <h2 className='text-2xl font-bold'>{candidate.nickname}</h2>
                             </div>
 
                             <CollapsibleTrigger asChild>
@@ -61,7 +61,18 @@ const CandidateCard = ({ candidate }: Props) => {
 
                                 <div>
                                     <p className='text-sm font-medium'>Качество кода:</p>
-                                    <p>{candidate.code_quality}</p>
+                                    <div className='flex items-center'>
+                                        {Array.from({ length: 5 }).map((_, index) => (
+                                            <StarIcon
+                                                key={index}
+                                                className={`w-4 h-4 ${
+                                                    index < Math.round(candidate.code_quality * 5)
+                                                        ? 'text-yellow-400'
+                                                        : 'text-gray-300'
+                                                }`}
+                                            />
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                             <div className='w-full md:w-1/3 space-y-4'>

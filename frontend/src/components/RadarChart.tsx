@@ -40,11 +40,21 @@ const RadarChart: React.FC<RadarChartProps> = ({ labels, datasets }) => {
 
     const options = {
         responsive: true,
+
         scales: {
             r: {
                 beginAtZero: true,
                 suggestedMin: 0,
                 suggestedMax: 1,
+                // grid: {
+                //     color: '#ffffff',
+                // },
+                // angleLines: {
+                //     color: '#ffffff',
+                // },
+                // pointLabels: {
+                //     fontColor: '#ffffff',
+                // },
             },
         },
     };
