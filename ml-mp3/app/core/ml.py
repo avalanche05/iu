@@ -74,7 +74,7 @@ class InterviewToText:
     audio_transcription = self.pipe(audio_file_path)
     competencies = ""
     chunk_size = 10000
-    for i in range(0, len(audio_transcription['text']), chunk_size):
+    for i in range(0, min(5 * chunk_size + 1, len(audio_transcription['text'])), chunk_size):
         # print(audio_transcription)
         prompt = f"""Используй Context это текст интервью на вакансию - {vacancy_dict['position']}, чтобы разложить на competencies - это технологии, которые он упоминал, где name - название технологии, proficiency - насколько хорошо он знает эту технологию от 0 до 1.
         Context:
@@ -94,5 +94,5 @@ class InterviewToText:
 
 speech_model = InterviewToText()
 def get_mp3_analyze(mp3_path: str, position: str) -> list[dict]:
-    result = speech_model.run(mp3_path, {"position": position})
-    return result
+    result = preprocess_str(speech_model.run(mp3_path, {"position": position}))
+    return json.loads(result)
