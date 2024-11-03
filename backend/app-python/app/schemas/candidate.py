@@ -9,6 +9,12 @@ from app.schemas.interview import Interview
 from app.schemas.metric import Metric
 
 
+class CandidateCreateLink(BaseSchema):
+    github_url: HttpUrl
+    github_repository_url: HttpUrl
+    nickname: str
+
+
 class CandidateCreate(BaseSchema):
     nickname: str
     email: str
@@ -19,6 +25,7 @@ class CandidateCreate(BaseSchema):
     code_quality: float
     competencies: list[Competence] | None = None
     metrics: Metric
+    code_quality_reason: str
 
 
 class Candidate(CandidateCreate):
@@ -29,4 +36,3 @@ class Candidate(CandidateCreate):
 
 class CandidateForVacancy(Candidate):
     compliance_percent: float
-

@@ -57,7 +57,7 @@ async def generate_approve_feedback(
     candidate = serializers.candidate.get_candidate(crud.candidate.get_candidate(db_session, candidate_id))
 
     candidate_data = {
-        "name": candidate.nickname,
+        "nickname": candidate.nickname,
         "grade": candidate.grade,
         "summary": candidate.summary,
     }
@@ -70,4 +70,5 @@ async def generate_approve_feedback(
             "status": status,
         },
     )
+    print(response.json())
     return Feedback(message=response.json()["message"])

@@ -15,7 +15,8 @@ def get_candidate(db_candidate: models.Candidate) -> schemas.Candidate:
         competencies=competence.get_competencies(db_candidate.competencies),
         folders=folder.get_folders(db_candidate.folders),
         technical_interview_result=None if db_candidate.interview is None else interview.get_interview(db_candidate.interview),
-        metrics=metric.get_metric(db_candidate.metrics)
+        metrics=metric.get_metric(db_candidate.metrics),
+        code_quality_reason=db_candidate.code_quality_reason
     )
 
 
@@ -39,7 +40,8 @@ def get_candidate_for_vacancy(db_candidate_for_vacancy: models.Candidate,
         technical_interview_result=None if db_candidate_for_vacancy.interview is None else interview.get_interview(
             db_candidate_for_vacancy.interview),
         compliance_percent=compliance_percent,
-        metrics=metric.get_metric(db_candidate_for_vacancy.metrics)
+        metrics=metric.get_metric(db_candidate_for_vacancy.metrics),
+        code_quality_reason=db_candidate_for_vacancy.code_quality_reason
     )
 
 

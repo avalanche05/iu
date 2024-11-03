@@ -14,15 +14,14 @@ router = APIRouter()
 
 @router.get("", status_code=status.HTTP_200_OK, response_model=list[schemas.Candidate])
 async def get_candidates(
-    session: SessionDep,
-    db_user: CurrentUser,
-    grade: str | None = None,
-    nickname: str | None = None,
-    competencies: str | None = None,
-    experience: int | None = None,
-    folder_id: int | None = None
+        session: SessionDep,
+        db_user: CurrentUser,
+        grade: str | None = None,
+        nickname: str | None = None,
+        competencies: str | None = None,
+        experience: int | None = None,
+        folder_id: int | None = None
 ) -> List[schemas.Candidate]:
-
     db_candidates = candidate.get_all(
         session=session,
         grade=grade,
@@ -38,5 +37,13 @@ async def get_candidates(
 async def create_candidate(session: SessionDep,
                            candidate_instance: schemas.CandidateCreate = Body(...)):
     db_candidate = candidate.create(session, candidate_instance)
+
+    return serializers.get_candidate(db_candidate)
+
+
+@router.post("/link", status_code=status.HTTP_201_CREATED, response_model=schemas.Candidate)
+async def create_candidate_from_link(session: SessionDep,
+                                     candidate_instance: schemas.CandidateCreateLink = Body(...)):
+    db_candidate = candidate.create_from_link(session, candidate_instance)
 
     return serializers.get_candidate(db_candidate)

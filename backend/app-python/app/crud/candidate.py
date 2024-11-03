@@ -50,7 +50,28 @@ def create(
         summary=candidate.summary,
         code_quality=candidate.code_quality,
         competencies=json.dumps([competence.dict() for competence in candidate.competencies]),
-        metrics=json.dumps(serializers.convert_metrics_to_dict(candidate.metrics))
+        metrics=json.dumps(serializers.convert_metrics_to_dict(candidate.metrics)),
+        code_quality_reason=candidate.code_quality_reason
+    )
+    session.add(db_candidate)
+    session.commit()
+    session.refresh(db_candidate)
+    return db_candidate
+
+
+def create_from_link(session: Session, candidate: schemas.CandidateCreateLink):
+    return {"message": "i love you"}
+    db_candidate = Candidate(
+        nickname=candidate.nickname,
+        email=candidate.email,
+        github_url=candidate.github_url,
+        experience_years=candidate.experience_years,
+        grade=candidate.grade,
+        summary=candidate.summary,
+        code_quality=candidate.code_quality,
+        competencies=json.dumps([competence.dict() for competence in candidate.competencies]),
+        metrics=json.dumps(serializers.convert_metrics_to_dict(candidate.metrics)),
+        code_quality_reason=candidate.code_quality_reason
     )
     session.add(db_candidate)
     session.commit()
