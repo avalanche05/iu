@@ -48,7 +48,8 @@ def create(
         grade=candidate.grade,
         summary=candidate.summary,
         code_quality=candidate.code_quality,
-        competencies=json.dumps([competence.dict() for competence in candidate.competencies])
+        competencies=json.dumps([competence.dict() for competence in candidate.competencies]),
+        metrics=json.dumps(serializers.convert_metrics_to_dict(candidate.metrics))
     )
     session.add(db_candidate)
     session.commit()

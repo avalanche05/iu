@@ -21,8 +21,6 @@ const InterviewFeedback = observer(() => {
     };
 
     const uploadFiles = () => {
-        console.log(file);
-
         if (file) {
             setIsUploading(true);
 

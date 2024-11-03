@@ -1,5 +1,5 @@
 from app import models, schemas
-from app.serializers import competence, folder, interview
+from app.serializers import competence, folder, interview, metric
 
 
 def get_candidate(db_candidate: models.Candidate) -> schemas.Candidate:
@@ -14,7 +14,8 @@ def get_candidate(db_candidate: models.Candidate) -> schemas.Candidate:
         code_quality=db_candidate.code_quality,
         competencies=competence.get_competencies(db_candidate.competencies),
         folders=folder.get_folders(db_candidate.folders),
-        technical_interview_result=None if db_candidate.interview is None else interview.get_interview(db_candidate.interview)
+        technical_interview_result=None if db_candidate.interview is None else interview.get_interview(db_candidate.interview),
+        metrics=metric.get_metric(db_candidate.metrics)
     )
 
 
@@ -37,7 +38,8 @@ def get_candidate_for_vacancy(db_candidate_for_vacancy: models.Candidate,
         folders=folder.get_folders(db_candidate_for_vacancy.folders),
         technical_interview_result=None if db_candidate_for_vacancy.interview is None else interview.get_interview(
             db_candidate_for_vacancy.interview),
-        compliance_percent=compliance_percent
+        compliance_percent=compliance_percent,
+        metrics=metric.get_metric(db_candidate_for_vacancy.metrics)
     )
 
 

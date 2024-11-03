@@ -12,6 +12,7 @@ from app.utils import vacancy_structure
 
 router = APIRouter()
 
+
 @router.post("/resume/process")
 async def process_resume(resume_process: ResumeProcess, s3_client: S3ClientDep) -> dict:
     file_key = resume_process.file_key

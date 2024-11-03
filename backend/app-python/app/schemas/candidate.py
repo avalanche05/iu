@@ -6,6 +6,7 @@ from app.common import BaseSchema
 from app.schemas.folder import Folder
 from app.schemas.competence import Competence
 from app.schemas.interview import Interview
+from app.schemas.metric import Metric
 
 
 class CandidateCreate(BaseSchema):
@@ -17,6 +18,7 @@ class CandidateCreate(BaseSchema):
     summary: str
     code_quality: float
     competencies: list[Competence] | None = None
+    metrics: Metric
 
 
 class Candidate(CandidateCreate):

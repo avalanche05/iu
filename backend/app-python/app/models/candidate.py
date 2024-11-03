@@ -29,6 +29,7 @@ class Candidate(BaseEntity):
     summary: Mapped[str] = mapped_column()
     code_quality: Mapped[float] = mapped_column()
     competencies: Mapped[str] = mapped_column(nullable=True)
+    metrics: Mapped[str] = mapped_column(nullable=True)
 
     folders: Mapped[list["Folder"]] = relationship(
         "Folder",

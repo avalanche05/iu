@@ -1,2 +1,6 @@
 .vscode
 .env
+**/venv
+**/dataset.json
+**/usrs
+**/.idea

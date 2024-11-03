@@ -2,6 +2,7 @@ from typing import Literal
 
 from app.common import BaseSchema
 from app.schemas.vacancy import Vacancy
+from app.schemas.interview import Interview
 
 
 class FileResult(BaseSchema):
@@ -21,4 +22,4 @@ class ResumeProcessSession(BaseSchema):
 class VoiceProcessSession(BaseSchema):
     session_id: str
     is_finished: bool
-    message: str | None = ""
+    interview: Interview | None = None

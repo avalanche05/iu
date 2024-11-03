@@ -48,7 +48,6 @@ exts = [
     '.lua',  # Lua
 ]
 
-
 def preprocess_str(s: str):
     return s.strip().strip('(').strip(')').strip().strip("'").strip().strip('"').strip("'").replace("\n", '').replace('\\n', '').replace('\\', '')
 class LlmRun:
@@ -58,6 +57,17 @@ class LlmRun:
         self.headers = {
             "Content-Type": "application/json"
         }
+
+    def run(self, prompt, max_tokens=100, temperature=0.1):
+        data = {
+        "prompt": [prompt],
+        "apply_chat_template": True,
+        "system_prompt": self.system_prompt,
+        "max_tokens": max_tokens,
+        "n": 1,
+        "temperature": temperature
+        }
+        
 
     def run(self, prompt, max_tokens=100, temperature=0.1, schema=None):
         data = {
@@ -69,6 +79,7 @@ class LlmRun:
             "schema": schema,
             "temperature": temperature
         }
+
 
         response = requests.post(self.llm_url + '/generate', data=json.dumps(data), headers=self.headers)
         return response.text
@@ -116,9 +127,8 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
                     'contributor': contributor,
                     'file_path': file_path
                 }
-
+                
                 response = requests.get(url, params=params)
-
                 # Check if the request was successful
                 if response.status_code == 200:
                     # Parse the JSON response
@@ -126,6 +136,8 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
                     if len(file.values()) > 0:
                         for str_code in file[key]:
                             files += str_code + '\n'
+                            if (len(files) > 10000):
+                                break
                 else:
                     print(f'Failed to retrieve data: {response.status_code}')
                 # files += '\n'
@@ -152,6 +164,7 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
     for run in runs:
         if len(run.strip()) != 0:
             try:
+                print("run155:", run)
                 candidate = json.loads(preprocess_str(run))
                 sumarries += candidate['summary'] + ' '
                 for comp in candidate['competencies']:
@@ -172,6 +185,7 @@ def get_code_summary(repo_url: str, contributor: str, data: dict) -> dict:
     Отвечай без объяснений. Отвечай только в формате списка json. Иначе штраф 10000000 долларов.
     """
     raw = preprocess_str(llm.run(promt, max_tokens=350, temperature=0.3))
+    print("175competencies", competencies)
     print("175text:", raw)
     final_competency = json.loads(raw)
 
