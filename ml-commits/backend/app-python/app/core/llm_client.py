@@ -91,6 +91,7 @@ def get_candidate(commits: list[dict]) -> dict:
     Context: {context}
     Отвечай без объяснения. Мне нужен только json, никаких лишних символов. Штраф - 10000000000000$.
     """, max_tokens=500, temperature=0.5, schema=schema_json)
+    print("text:", raw)
     t = json.loads(raw)
     return json.loads(t)
 
