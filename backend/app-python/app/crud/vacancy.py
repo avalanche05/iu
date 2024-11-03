@@ -38,7 +38,7 @@ def get_all(
         query = query.filter(Vacancy.title.ilike(f"%{title}%"))
 
     if competencies is not None:
-        competencies_list = [competence.strip(' ,\n') for competence in competencies.split()]
+        competencies_list = [competence.strip(' ,\n').lower() for competence in competencies.split()]
         conditions = [Candidate.competencies.ilike(f"%{competence}%") for competence in competencies_list]
         query = query.filter(
             or_(*conditions)
