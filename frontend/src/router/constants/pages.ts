@@ -6,7 +6,6 @@ export enum Pages {
     Vacancies = 'vacancies',
     VacancyDetails = 'vacancies/:id',
     Comparision = 'comparision',
-    Uploader = 'uploader',
     Statistics = 'statistics',
     InterviewFeedback = 'interview-feedback',
 }

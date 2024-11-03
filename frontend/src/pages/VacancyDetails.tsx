@@ -144,22 +144,15 @@ const VacancyDetails = observer(() => {
             </div>
 
             {loading || !vacancyDetails ? (
-                Array.from({ length: 5 }).map((_, index) => (
-                    <Card key={index} className='mb-4'>
-                        <CardContent>
-                            <div className='flex items-center justify-between'>
-                                <div className='flex gap-4'>
-                                    <Skeleton className='h-6 w-1/2' />
-                                    <Skeleton className='h-6 w-1/4' />
-                                </div>
-                                <div className='flex gap-4'>
-                                    <Skeleton className='h-6 w-1/4' />
-                                    <Skeleton className='h-6 w-1/4' />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))
+                <>
+                    <Skeleton className='h-40' />
+
+                    <div className='flex gap-4 mt-10'>
+                        <Skeleton className='h-40 w-full' />
+                        <Skeleton className='h-40 w-full' />
+                        <Skeleton className='h-40 w-full' />
+                    </div>
+                </>
             ) : (
                 <>
                     <VacancyInfo
@@ -168,7 +161,15 @@ const VacancyDetails = observer(() => {
                         candidateLabels={candidateLabels}
                     />
 
-                    <h2 className='text-2xl font-semibold mb-4'>Подходящие кандидаты</h2>
+                    <div className='mb-2'>
+                        <h2 className='text-2xl font-semibold mb-1'>Подходящие кандидаты</h2>
+
+                        <p>
+                            Кандидаты отранжированы по релевантновти вакансии. Выберите кандидата,
+                            чтобы сравнить его навыки с требованиями вакансии.
+                        </p>
+                    </div>
+
                     <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
                         {vacancyDetails.candidates.map((candidate, index) => (
                             <div

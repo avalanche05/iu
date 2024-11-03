@@ -9,7 +9,6 @@ import { Pages } from './router/constants';
 import Candidates from './pages/Candidates';
 import Vacancies from './pages/Vacancies';
 import Comparision from './pages/Comparision';
-import Uploader from './pages/Uploader';
 import Statistics from './pages/Statistics';
 import InterviewFeedback from './pages/InterviewFeedback';
 import VacancyDetails from './pages/VacancyDetails';
@@ -69,16 +68,7 @@ function App() {
                             </RequireAuth>
                         }
                     />
-                    <Route
-                        path={`/${Pages.Uploader}`}
-                        element={
-                            <RequireAuth>
-                                <Dashboard>
-                                    <Uploader />
-                                </Dashboard>
-                            </RequireAuth>
-                        }
-                    />
+
                     <Route
                         path={`/${Pages.Statistics}`}
                         element={
