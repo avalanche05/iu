@@ -40,7 +40,6 @@ class ResumeProcessorThread(threading.Thread):
                 "is_success": True,
                 "competencies": result,
             }
-            print(self._result)
 
 
 @router.post("/interview/analyze/{session_id}")
@@ -65,48 +64,25 @@ async def analyze_interwiew(
     }
 
 
-# @router.get("/{session_id}")
-# async def get_resume_process_session(storage: StorageDep, db_user: CurrentUser, session_id: str):
-#     if session_id not in storage:
-#         raise HTTPException(
-#             status_code=404, detail=f"Session with id: {session_id} not found"
-#         )
-#     processor_thread = storage[session_id]
-#     processed_files = []
-#     all_files = []
-#     with processor_thread.lock:
-#         processed_files = copy.copy(processor_thread._processed_files)
-#         all_files = copy.copy(processor_thread.all_files)
-#     is_active = processor_thread.is_alive()
-
-#     processing = []
-#     success = []
-#     error = []
-
-#     for file in all_files:
-#         if file in processed_files:
-#             file_data = processed_files[file]
-#             if file_data["is_success"]:
-#                 success.append(
-#                     FileResult(
-#                         file_name=file_data["file_name"],
-#                         vacancy=file_data["vacancy"],
-#                     )
-#                 )
-#             else:
-#                 error.append(
-#                     FileResult(
-#                         file_name=file_data["file_name"],
-#                         message=file_data["reason"],
-#                     )
-#                 )
-#         else:
-#             processing.append(FileResult(file_name=file))
-
-#     return ResumeProcessSession(
-#         session_id=session_id,
-#         is_finished=not is_active,
-#         processing=processing,
-#         success=success,
-#         error=error,
-#     )
+@router.get("/interview/analyze/{session_id}")
+async def get_interview_process_session(storage: StorageDep, session_id: str):
+    if session_id not in storage:
+        raise HTTPException(
+            status_code=404, detail=f"Session with id: {session_id} not found"
+        )
+    processor_thread = storage[session_id]
+    
+    if processor_thread._result:
+        return {
+            "is_finished": True,
+            "competencies": processor_thread._result["competencies"],
+        }
+    if not processor_thread.is_alive():
+        return {
+            "is_finished": True,
+            "competencies": None,
+        }
+    return {
+        "is_finished": False,
+        "competencies": None,
+    }
