@@ -51,7 +51,8 @@
 **ML:** Pytorch, Ollama, SentenceTransformers, Whisper
 
 ## Архитектура
-<img width="1083" alt="image" src="https://github.com/user-attachments/assets/7a082ab9-b5f6-4166-bd9d-aa5ea788028f">
+<img width="1239" alt="image" src="https://github.com/user-attachments/assets/d9c6dd7d-a35d-4846-bd86-98a7aa649edd">
+
 
 
 
